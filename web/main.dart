@@ -3,11 +3,16 @@ import 'package:AudioLib/AudioLib.dart';
 
 void main() {
   Element output = querySelector("#output");
+
+  new Audio("http://farragnarok.com/PodCasts");
+  Audio.createChannel("Voice");
+
+  InputElement input = new InputElement()..value = "Passphrase";
+  output.append(input);
+
   ButtonElement button = new ButtonElement()..text = "Play";
   output.append(button);
   button.onClick.listen((MouseEvent event){
-    new Audio("Audio");
-    Audio.createChannel("Voice");
-    Audio.play("warning", "Voice");
+    Audio.play(input.value, "Voice");
     });
 }
