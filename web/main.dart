@@ -13,6 +13,10 @@ void main() {
   ButtonElement button = new ButtonElement()..text = "Play";
   output.append(button);
   button.onClick.listen((MouseEvent event){
-    Audio.play(input.value, "Voice");
+    try {
+      Audio.play(input.value, "Voice");
+    }catch(e) {
+      window.alert("Passphrase Invalid!!!");
+    }
     });
 }
