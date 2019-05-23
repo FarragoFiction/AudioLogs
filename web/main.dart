@@ -7,7 +7,7 @@ Random rand = new Random(13);
 
 //the sources we'll use for wrong passphrases
 //TODO choose which of the absolutebullshit to choose based on the content of the input
-List<String> absoluteBullshit = <String>["nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
+List<String> absoluteBullshit = <String>["void","voidplayers",'owo',"nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
 
 //the sources we'll use for wrong passphrases bg music
 List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
