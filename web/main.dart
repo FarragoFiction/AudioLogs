@@ -8,6 +8,9 @@ Random rand = new Random(13);
 //the sources we'll use for wrong passphrases
 List<String> absoluteBullshit = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas"];
 
+//the sources we'll use for wrong passphrases bg music
+List<String> soothingMusic = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas"];
+
 void main() {
   rand.nextInt();
   Element output = querySelector("#output");
@@ -15,6 +18,8 @@ void main() {
   new Audio("http://farragnarok.com/PodCasts");
   Audio.SYSTEM.rand = rand;
   Audio.createChannel("Voice");
+  Audio.createChannel("BG");
+
   String initPW = "Passphrase";
   if(Uri.base.queryParameters['passPhrase'] != null) {
     initPW = Uri.base.queryParameters['passPhrase'];
