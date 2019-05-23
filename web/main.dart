@@ -6,6 +6,7 @@ import 'package:CommonLib/Random.dart';
 Random rand = new Random(13);
 
 //the sources we'll use for wrong passphrases
+//TODO choose which of the absolutebullshit to choose based on the content of the input
 List<String> absoluteBullshit = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
 
 //the sources we'll use for wrong passphrases bg music
