@@ -52,7 +52,7 @@ void main() {
 
 Future bullshitCorruption(AudioChannel bg, String value) async {
   List<String> corruptChannels = selectCorruptChannels(value);
-  print("REMOVE THIS JR, but choose $corruptChannels");
+  //print("REMOVE THIS JR, but choose $corruptChannels");
   //each channel individually fucks up
 
   for(String channel in corruptChannels) {
@@ -69,7 +69,7 @@ Future bullshitCorruption(AudioChannel bg, String value) async {
   }
   AudioBufferSourceNode nodeBG = await Audio.play(rand.pickFrom(soothingMusic), "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
   bg.volumeParam.value = 0.3;
-  print("legibilitiy level is $legibilityLevelInMS");
+  print("legibilitiy level is $legibilityLevelInMS ;)");
   fuckAroundMusic(nodeBG, 0.1, 1);
 }
 
