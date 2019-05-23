@@ -5,7 +5,7 @@
         <entry key="AudioLib">
           <value>
             <list>
-              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/git/AudioLib-0e227121488226d7282d67549ffd29a9b205a28c/lib" />
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/git/AudioLib-a46a0b4d14de5896ef49143a6b277bef23f8fe17/lib" />
             </list>
           </value>
         </entry>
@@ -19,7 +19,7 @@
         <entry key="LoaderLib">
           <value>
             <list>
-              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/git/LoaderLib-ca26c79f927d0c5d98205f430aaede1a0a27f1c5/lib" />
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/git/LoaderLib-d00bff803f79130ffea73e702cee86df1c702ffc/lib" />
             </list>
           </value>
         </entry>
@@ -439,7 +439,7 @@
         <entry key="web_socket_channel">
           <value>
             <list>
-              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/web_socket_channel-1.0.12/lib" />
+              <option value="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/web_socket_channel-1.0.13/lib" />
             </list>
           </value>
         </entry>
@@ -453,9 +453,9 @@
       </option>
     </properties>
     <CLASSES>
-      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/git/AudioLib-0e227121488226d7282d67549ffd29a9b205a28c/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/git/AudioLib-a46a0b4d14de5896ef49143a6b277bef23f8fe17/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/git/CommonLib-c5b66c298ebc3eec0482fc90e7adee54710d32bd/lib" />
-      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/git/LoaderLib-ca26c79f927d0c5d98205f430aaede1a0a27f1c5/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/git/LoaderLib-d00bff803f79130ffea73e702cee86df1c702ffc/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/analyzer-0.35.4/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/archive-2.0.9/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/args-1.5.1/lib" />
@@ -515,7 +515,7 @@
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/timing-0.1.1+1/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/watcher-0.9.7+10/lib" />
-      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/web_socket_channel-1.0.12/lib" />
+      <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/web_socket_channel-1.0.13/lib" />
       <root url="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/yaml-2.1.15/lib" />
     </CLASSES>
     <JAVADOC />

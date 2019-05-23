@@ -12,9 +12,10 @@ void main() {
 
   ButtonElement button = new ButtonElement()..text = "Play";
   output.append(button);
-  button.onClick.listen((MouseEvent event){
+  output.append(Audio.slider(Audio.SYSTEM.volumeParam));
+  button.onClick.listen((MouseEvent event) async {
     try {
-      Audio.play(input.value, "Voice");
+      await Audio.play(input.value, "Voice");
     }catch(e) {
       window.alert("Passphrase Invalid!!!");
     }
