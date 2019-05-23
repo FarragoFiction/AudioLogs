@@ -5,31 +5,58 @@ import 'package:AudioLib/AudioLib.dart';
 import 'package:CommonLib/Random.dart';
 Random rand = new Random(13);
 
+//the sources we'll use for wrong passphrases
+List<String> absoluteBullshit = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas"];
+
 void main() {
   rand.nextInt();
   Element output = querySelector("#output");
 
   new Audio("http://farragnarok.com/PodCasts");
+  Audio.SYSTEM.rand = rand;
   Audio.createChannel("Voice");
+  String initPW = "Passphrase";
+  if(Uri.base.queryParameters['passPhrase'] != null) {
+    initPW = Uri.base.queryParameters['passPhrase'];
+  }
 
-  InputElement input = new InputElement()..value = "Passphrase";
+  InputElement input = new InputElement()..value = initPW;
   output.append(input);
+  changePassPhrase(input.value);
+
 
   ButtonElement button = new ButtonElement()..text = "Play";
   output.append(button);
   output.append(Audio.slider(Audio.SYSTEM.volumeParam));
 
   button.onClick.listen((MouseEvent event) async {
+    changePassPhrase(input.value);
     try {
       AudioBufferSourceNode node = await Audio.play(input.value, "Voice");
       output.append(Audio.slider(node.playbackRate));
 
     }catch(e) {
-      AudioBufferSourceNode node = await Audio.play("warning", "Voice",pitchVar: 13.0)..playbackRate.value = 0.1;
-      output.append(Audio.slider(node.playbackRate));
+      AudioBufferSourceNode node = await Audio.play(rand.pickFrom(absoluteBullshit), "Voice",pitchVar: 13.0)..playbackRate.value = 0.1;
       fuckAround(node, 0.1, 1);
     }
     });
+}
+
+void changePassPhrase(String value) {
+  setPassPhraseLink(value);
+  rand.setSeed(convertSentenceToNumber(value));
+}
+
+void setPassPhraseLink(String passPhrase) {
+  window.history.replaceState(<String,String>{}, "???", "${Uri.base.path}?passPhrase=${passPhrase}");
+}
+
+int convertSentenceToNumber(String sentence) {
+  int ret = 0;
+  for(int s in sentence.codeUnits) {
+    ret += s;
+  }
+  return ret;
 }
 
 void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
