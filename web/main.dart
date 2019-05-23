@@ -17,7 +17,7 @@ void main() {
     try {
       await Audio.play(input.value, "Voice");
     }catch(e) {
-      window.alert("Passphrase Invalid!!!");
+      await Audio.play("warning", "Voice")..playbackRate.value = 0.1;
     }
     });
 }
