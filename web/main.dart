@@ -6,10 +6,10 @@ import 'package:CommonLib/Random.dart';
 Random rand = new Random(13);
 
 //the sources we'll use for wrong passphrases
-List<String> absoluteBullshit = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas"];
+List<String> absoluteBullshit = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
 
 //the sources we'll use for wrong passphrases bg music
-List<String> soothingMusic = <String>["warning","weird","conjecture", "Verthfolnir_Podcast","echidnas"];
+List<String> soothingMusic = <String>["Verthfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
 
 void main() {
   rand.nextInt();
@@ -17,8 +17,8 @@ void main() {
 
   new Audio("http://farragnarok.com/PodCasts");
   Audio.SYSTEM.rand = rand;
-  Audio.createChannel("Voice");
-  Audio.createChannel("BG");
+  AudioChannel voice = Audio.createChannel("Voice");
+  AudioChannel bg = Audio.createChannel("BG");
 
   String initPW = "Passphrase";
   if(Uri.base.queryParameters['passPhrase'] != null) {
@@ -42,7 +42,12 @@ void main() {
 
     }catch(e) {
       AudioBufferSourceNode node = await Audio.play(rand.pickFrom(absoluteBullshit), "Voice",pitchVar: 13.0)..playbackRate.value = 0.1;
+      AudioBufferSourceNode nodeBG = await Audio.play(rand.pickFrom(soothingMusic), "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
+      bg.volumeParam.value = 0.3;
+
       fuckAround(node, 0.1, 1);
+      fuckAround(nodeBG, 0.1, 1);
+
     }
     });
 }
