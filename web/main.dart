@@ -52,7 +52,7 @@ void main() {
 
 Future bullshitCorruption(AudioChannel bg, String value) async {
   List<String> corruptChannels = selectCorruptChannels(value);
-  //print("REMOVE THIS JR, but choose $corruptChannels");
+  print("REMOVE THIS JR, but choose $corruptChannels");
   //each channel individually fucks up
 
   for(String channel in corruptChannels) {
@@ -106,9 +106,14 @@ List<String> selectCorruptChannels(String value) {
 
   if(ret.isNotEmpty) return ret;
   //you picked something just non existant
+  //yes this allows repeats
   ret.add(rand.pickFrom(absoluteBullshit));
   ret.add(rand.pickFrom(absoluteBullshit));
   ret.add(rand.pickFrom(absoluteBullshit));
+  int num = rand.nextIntRange(1,5);
+  for(int i =0; i<num; i++) {
+    ret.add(rand.pickFrom(absoluteBullshit));
+  }
   legibilityLevelInMS = 20;
 
   return ret;
@@ -133,7 +138,7 @@ int convertSentenceToNumber(String sentence) {
 
 void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
   node.playbackRate.value = rate;
-  if(rate >legibilityLevelInMS/1000) {
+  if(rate >1000/legibilityLevelInMS || rate > 1.3) {
     rate = 0.1;
     direction = 1;
   }else if(rate < 0.1) {
@@ -156,8 +161,11 @@ void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
   if(rand.nextDouble() >0.9) {
     direction = direction * -1;
   }
-
-  new Timer(Duration(milliseconds: legibilityLevelInMS), ()
+  int next = legibilityLevelInMS;
+  if(legibilityLevelInMS < 200) {
+    next = rand.nextIntRange(200, 1000);
+  }
+  new Timer(Duration(milliseconds: next), ()
   {
     fuckAround(node, rate, direction);
   });
