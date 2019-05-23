@@ -12,6 +12,9 @@ List<String> absoluteBullshit = <String>["echidnamilk","charms4","charms3","char
 //the sources we'll use for wrong passphrases bg music
 List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
 
+//smaller numbers mean more changes means less understandable at once
+int legibilityLevelInMS = 20;
+
 void main() {
   rand.nextInt();
   Element output = querySelector("#output");
@@ -61,7 +64,7 @@ Future bullshitCorruption(AudioChannel bg, String value) async {
     AudioBufferSourceNode node = await Audio.play(
         channel, channel, pitchVar: 13.0)
       ..playbackRate.value = 0.1;
-    fuckAround(node, 0.1, 1);
+    fuckAround(node, legibilityLevelInMS/1000, 1);
   }
   AudioBufferSourceNode nodeBG = await Audio.play(rand.pickFrom(soothingMusic), "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
   bg.volumeParam.value = 0.3;
@@ -74,20 +77,13 @@ Future bullshitCorruption(AudioChannel bg, String value) async {
 //this way you can see iterations of the same file by picking similar words
 List<String> selectCorruptChannels(String value) {
   List<String> ret = new List<String>();
-  //TODO first see if the thing starts with you.
-  //then see if it contains you
-  //then figure out a unique mapping from string start to file. maybe first letter?
-  /*
-  basically, what you want to do is first see if any start with what was passed in
-  if none do, then look for contains
-  if STILL none do, then grab only the first letter of the value and look for that
-  if STILL STILL none do just pick one thing at random okay
-   */
   absoluteBullshit.forEach((String bullshit) {
     if(bullshit.toLowerCase().startsWith(value.toLowerCase())){
       ret.add(bullshit);
     }
   });
+  //the more letters you manage to match, the more legible it is.
+  legibilityLevelInMS = 200 * value.length;
 
   if(ret.isNotEmpty) return ret;
 
@@ -96,6 +92,7 @@ List<String> selectCorruptChannels(String value) {
       ret.add(bullshit);
     }
   });
+  legibilityLevelInMS = 100 * value.length;
 
   if(ret.isNotEmpty) return ret;
 
@@ -104,12 +101,14 @@ List<String> selectCorruptChannels(String value) {
       ret.add(bullshit);
     }
   });
+  legibilityLevelInMS = 200;
 
   if(ret.isNotEmpty) return ret;
   //you picked something just non existant
   ret.add(rand.pickFrom(absoluteBullshit));
   ret.add(rand.pickFrom(absoluteBullshit));
   ret.add(rand.pickFrom(absoluteBullshit));
+  legibilityLevelInMS = 20;
 
   return ret;
 }
