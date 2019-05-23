@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:web_audio';
 import 'package:AudioLib/AudioLib.dart';
 
 void main() {
@@ -13,11 +14,16 @@ void main() {
   ButtonElement button = new ButtonElement()..text = "Play";
   output.append(button);
   output.append(Audio.slider(Audio.SYSTEM.volumeParam));
+
   button.onClick.listen((MouseEvent event) async {
     try {
-      await Audio.play(input.value, "Voice");
+      AudioBufferSourceNode node = await Audio.play(input.value, "Voice");
+      output.append(Audio.slider(node.playbackRate));
+
     }catch(e) {
-      await Audio.play("warning", "Voice")..playbackRate.value = 0.1;
+      AudioBufferSourceNode node = await Audio.play("warning", "Voice",pitchVar: 13.0)..playbackRate.value = 0.1;
+      output.append(Audio.slider(node.playbackRate));
+
     }
     });
 }
