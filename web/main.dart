@@ -7,7 +7,7 @@ Random rand = new Random(13);
 
 //the sources we'll use for wrong passphrases
 //TODO choose which of the absolutebullshit to choose based on the content of the input
-List<String> absoluteBullshit = <String>["echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
+List<String> absoluteBullshit = <String>["nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
 
 //the sources we'll use for wrong passphrases bg music
 List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
@@ -51,8 +51,18 @@ void main() {
 }
 
 Future bullshitCorruption(AudioChannel bg, String value) async {
+  await gigglesnort(value);
+  String music = rand.pickFrom(soothingMusic);
+  print("music chosen is $music");
+  AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
+  bg.volumeParam.value = 0.8;
+  print("legibilitiy level is $legibilityLevelInMS ;)");
+  fuckAroundMusic(nodeBG, 0.2, 1);
+}
+
+Future gigglesnort(String value) async {
   List<String> corruptChannels = selectCorruptChannels(value);
-  print("REMOVE THIS JR, but choose $corruptChannels");
+  //print("REMOVE THIS JR, but choose $corruptChannels");
   //each channel individually fucks up
 
   for(String channel in corruptChannels) {
@@ -67,10 +77,6 @@ Future bullshitCorruption(AudioChannel bg, String value) async {
       ..playbackRate.value = 0.1;
     fuckAround(node, legibilityLevelInMS/1000, 1);
   }
-  AudioBufferSourceNode nodeBG = await Audio.play(rand.pickFrom(soothingMusic), "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
-  bg.volumeParam.value = 0.3;
-  print("legibilitiy level is $legibilityLevelInMS ;)");
-  fuckAroundMusic(nodeBG, 0.1, 1);
 }
 
 //return all absolute bullshit that matches this.
@@ -173,12 +179,12 @@ void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
 
 void fuckAroundMusic(AudioBufferSourceNode node, double rate, int direction) async {
   node.playbackRate.value = rate;
-  if(rate >0.5) {
+  if(rate >0.7) {
     direction = -1;
-  }else if(rate < 0.01) {
+  }else if(rate < 0.1) {
     direction = 1;
   }
-    rate += 0.01 * direction;
+    rate += 0.001 * direction;
 
 
   if(rand.nextDouble() >0.7) {
