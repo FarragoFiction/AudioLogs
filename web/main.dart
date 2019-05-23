@@ -54,6 +54,7 @@ Future bullshitCorruption(AudioChannel bg, String value) async {
   List<String> corruptChannels = selectCorruptChannels(value);
   print("REMOVE THIS JR, but choose $corruptChannels");
   //each channel individually fucks up
+
   for(String channel in corruptChannels) {
     try {
       AudioChannel newchannel = Audio.createChannel(channel);
@@ -68,7 +69,7 @@ Future bullshitCorruption(AudioChannel bg, String value) async {
   }
   AudioBufferSourceNode nodeBG = await Audio.play(rand.pickFrom(soothingMusic), "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
   bg.volumeParam.value = 0.3;
-
+  print("legibilitiy level is $legibilityLevelInMS");
   fuckAroundMusic(nodeBG, 0.1, 1);
 }
 
@@ -132,7 +133,7 @@ int convertSentenceToNumber(String sentence) {
 
 void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
   node.playbackRate.value = rate;
-  if(rate >0.9) {
+  if(rate >legibilityLevelInMS/1000) {
     rate = 0.1;
     direction = 1;
   }else if(rate < 0.1) {
@@ -156,7 +157,7 @@ void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
     direction = direction * -1;
   }
 
-  new Timer(Duration(milliseconds: 200), ()
+  new Timer(Duration(milliseconds: legibilityLevelInMS), ()
   {
     fuckAround(node, rate, direction);
   });
