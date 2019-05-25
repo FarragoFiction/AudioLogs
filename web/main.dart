@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:web_audio';
 import 'package:AudioLib/AudioLib.dart';
+import 'package:CommonLib/Logging.dart';
 import 'package:CommonLib/Random.dart';
 Random rand = new Random(13);
 
@@ -11,13 +12,17 @@ List<String> absoluteBullshit = <String>["void","voidplayers",'owo',"nope1","nop
 
 //the sources we'll use for wrong passphrases bg music
 List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
-
+Element system;
 //smaller numbers mean more changes means less understandable at once
 int legibilityLevelInMS = 20;
+final String tapeIn = "casettein";
+final String tapeOut = "cassetteout";
 
 void main() {
   rand.nextInt();
   Element output = querySelector("#output");
+  system = new DivElement();
+  output.append(system);
 
   new Audio("http://farragnarok.com/PodCasts");
   Audio.SYSTEM.rand = rand;
@@ -35,22 +40,43 @@ void main() {
 
 
   ButtonElement button = new ButtonElement()..text = "Play";
+  button.autofocus = true;
   output.append(button);
   output.append(Audio.slider(Audio.SYSTEM.volumeParam));
-
   button.onClick.listen((MouseEvent event) async {
+    systemPrint("wrrr...click!");
     changePassPhrase(input.value);
     try {
-      AudioBufferSourceNode node = await Audio.play(input.value, "Voice");
-      output.append(Audio.slider(node.playbackRate));
-
+      await Audio.SYSTEM.load(input.value); //if theres a problem here, it will be caught.
     }catch(e) {
+      systemPrint("Error! Unknown Passphrase: ${input.value}");
       await bullshitCorruption(bg, input.value);
+      return;
     }
+    //Playlist playList = new Playlist(<String>[input.value]);
+
+    Playlist playList = new Playlist(<String>[tapeIn,input.value,tapeOut]);
+    playList.output.connectNode(Audio.SYSTEM.channels["Voice"].volumeNode);
+    await playList.play();
+    systemPrint("Passphrase Accepted!");
     });
 }
 
+void systemPrint(String text, [int size = 18]) {
+  String fontFamiily = "'Courier New', Courier, monospace";
+  String fontWeight = "bold";
+  String fontColor = "#000000";
+  String consortCss = "font-family: $fontFamiily;color:$fontColor;font-size: ${size}px;font-weight: $fontWeight;";
+  fancyPrint("Gigglette Player: $text",consortCss);
+  DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
+  div.text = text;
+  system.text = "";
+  system.append(div);
+}
+
 Future bullshitCorruption(AudioChannel bg, String value) async {
+  AudioBufferSourceNode node = await Audio.play(
+      tapeIn, "Voice");
   await gigglesnort(value);
   String music = rand.pickFrom(soothingMusic);
   print("music chosen is $music");
@@ -64,7 +90,7 @@ Future gigglesnort(String value) async {
   List<String> corruptChannels = selectCorruptChannels(value);
   //print("REMOVE THIS JR, but choose $corruptChannels");
   //each channel individually fucks up
-
+  //physically impossible to both layer noises AND have a tape in/tape out sound
   for(String channel in corruptChannels) {
     try {
       AudioChannel newchannel = Audio.createChannel(channel);
