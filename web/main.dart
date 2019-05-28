@@ -15,31 +15,31 @@ List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shoo
 Element system;
 //smaller numbers mean more changes means less understandable at once
 int legibilityLevelInMS = 20;
-final String tapeIn = "casettein";
-final String tapeOut = "cassetteout";
+const String tapeIn = "casettein";
+const String tapeOut = "cassetteout";
 
 void main() {
   rand.nextInt();
-  Element output = querySelector("#output");
+  final Element output = querySelector("#output");
   system = new DivElement();
   output.append(system);
 
   new Audio("http://farragnarok.com/PodCasts");
   Audio.SYSTEM.rand = rand;
-  AudioChannel voice = Audio.createChannel("Voice");
-  AudioChannel bg = Audio.createChannel("BG");
+  final AudioChannel voice = Audio.createChannel("Voice");
+  final AudioChannel bg = Audio.createChannel("BG");
 
   String initPW = "Passphrase";
   if(Uri.base.queryParameters['passPhrase'] != null) {
     initPW = Uri.base.queryParameters['passPhrase'];
   }
 
-  InputElement input = new InputElement()..value = initPW;
+  final InputElement input = new InputElement()..value = initPW;
   output.append(input);
   changePassPhrase(input.value);
 
 
-  ButtonElement button = new ButtonElement()..text = "Play";
+  final ButtonElement button = new ButtonElement()..text = "Play";
   button.autofocus = true;
   output.append(button);
   output.append(Audio.slider(Audio.SYSTEM.volumeParam));
@@ -48,14 +48,14 @@ void main() {
     changePassPhrase(input.value);
     try {
       await Audio.SYSTEM.load(input.value); //if theres a problem here, it will be caught.
-    }catch(e) {
+    } on ProgressEvent {
       systemPrint("Error! Unknown Passphrase: ${input.value}");
       await bullshitCorruption(bg, input.value);
       return;
     }
     //Playlist playList = new Playlist(<String>[input.value]);
 
-    Playlist playList = new Playlist(<String>[tapeIn,input.value,tapeOut]);
+    final Playlist playList = new Playlist(<String>[tapeIn,input.value,tapeOut]);
     playList.output.connectNode(Audio.SYSTEM.channels["Voice"].volumeNode);
     await playList.play();
     systemPrint("Passphrase Accepted!");
@@ -63,42 +63,42 @@ void main() {
 }
 
 void systemPrint(String text, [int size = 18]) {
-  String fontFamiily = "'Courier New', Courier, monospace";
-  String fontWeight = "bold";
-  String fontColor = "#000000";
-  String consortCss = "font-family: $fontFamiily;color:$fontColor;font-size: ${size}px;font-weight: $fontWeight;";
+  const String fontFamiily = "'Courier New', Courier, monospace";
+  const String fontWeight = "bold";
+  const String fontColor = "#000000";
+  final String consortCss = "font-family: $fontFamiily;color:$fontColor;font-size: ${size}px;font-weight: $fontWeight;";
   fancyPrint("Gigglette Player: $text",consortCss);
-  DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
+  final DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
   div.text = text;
   system.text = "";
   system.append(div);
 }
 
-Future bullshitCorruption(AudioChannel bg, String value) async {
+Future<void> bullshitCorruption(AudioChannel bg, String value) async {
   AudioBufferSourceNode node = await Audio.play(
       tapeIn, "Voice");
   await gigglesnort(value);
-  String music = rand.pickFrom(soothingMusic);
+  final String music = rand.pickFrom(soothingMusic);
   print("music chosen is $music");
-  AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
+  final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
   bg.volumeParam.value = 0.8;
   print("legibilitiy level is $legibilityLevelInMS ;)");
   fuckAroundMusic(nodeBG, 0.2, 1);
 }
 
-Future gigglesnort(String value) async {
-  List<String> corruptChannels = selectCorruptChannels(value);
+Future<void> gigglesnort(String value) async {
+  final List<String> corruptChannels = selectCorruptChannels(value);
   //print("REMOVE THIS JR, but choose $corruptChannels");
   //each channel individually fucks up
   //physically impossible to both layer noises AND have a tape in/tape out sound
-  for(String channel in corruptChannels) {
+  for(final String channel in corruptChannels) {
     try {
       AudioChannel newchannel = Audio.createChannel(channel);
-    }catch(e) {
+    } on Exception {
       //it already exists, so we don't need to do anything
     }
 
-    AudioBufferSourceNode node = await Audio.play(
+    final AudioBufferSourceNode node = await Audio.play(
         channel, channel, pitchVar: 13.0)
       ..playbackRate.value = 0.1;
     fuckAround(node, legibilityLevelInMS/1000, 1);
@@ -109,31 +109,31 @@ Future gigglesnort(String value) async {
 //if nothing matches should still use the LETTERS (not the sum of them) to retrieve what files are invovled.
 //this way you can see iterations of the same file by picking similar words
 List<String> selectCorruptChannels(String value) {
-  List<String> ret = new List<String>();
-  absoluteBullshit.forEach((String bullshit) {
+  final List<String> ret = <String>[];
+  for (final String bullshit in absoluteBullshit) {
     if(bullshit.toLowerCase().startsWith(value.toLowerCase())){
       ret.add(bullshit);
     }
-  });
+  }
   //the more letters you manage to match, the more legible it is.
   legibilityLevelInMS = 200 * value.length;
 
   if(ret.isNotEmpty) return ret;
 
-  absoluteBullshit.forEach((String bullshit) {
+  for(final String bullshit in absoluteBullshit) {
     if(bullshit.toLowerCase().contains(value.toLowerCase())){
       ret.add(bullshit);
     }
-  });
+  }
   legibilityLevelInMS = 100 * value.length;
 
   if(ret.isNotEmpty) return ret;
 
-  absoluteBullshit.forEach((String bullshit) {
+  for (final String bullshit in absoluteBullshit) {
     if(bullshit.toLowerCase().startsWith(value.toLowerCase().substring(0,1))){
       ret.add(bullshit);
     }
-  });
+  }
   legibilityLevelInMS = 200;
 
   if(ret.isNotEmpty) return ret;
@@ -142,7 +142,7 @@ List<String> selectCorruptChannels(String value) {
   ret.add(rand.pickFrom(absoluteBullshit));
   ret.add(rand.pickFrom(absoluteBullshit));
   ret.add(rand.pickFrom(absoluteBullshit));
-  int num = rand.nextIntRange(1,5);
+  final int num = rand.nextIntRange(1,5);
   for(int i =0; i<num; i++) {
     ret.add(rand.pickFrom(absoluteBullshit));
   }
@@ -157,18 +157,18 @@ void changePassPhrase(String value) {
 }
 
 void setPassPhraseLink(String passPhrase) {
-  window.history.replaceState(<String,String>{}, "???", "${Uri.base.path}?passPhrase=${passPhrase}");
+  window.history.replaceState(<String,String>{}, "???", "${Uri.base.path}?passPhrase=$passPhrase");
 }
 
 int convertSentenceToNumber(String sentence) {
   int ret = 0;
-  for(int s in sentence.codeUnits) {
+  for(final int s in sentence.codeUnits) {
     ret += s;
   }
   return ret;
 }
 
-void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
+Future<void> fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
   node.playbackRate.value = rate;
   if(rate >1000/legibilityLevelInMS || rate > 1.3) {
     rate = 0.1;
@@ -203,7 +203,7 @@ void fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
   });
 }
 
-void fuckAroundMusic(AudioBufferSourceNode node, double rate, int direction) async {
+Future<void> fuckAroundMusic(AudioBufferSourceNode node, double rate, int direction) async {
   node.playbackRate.value = rate;
   if(rate >0.7) {
     direction = -1;
