@@ -26,6 +26,7 @@ void main() {
     Keyboard.init();
     rand.nextInt();
     final Element output = querySelector("#output");
+    output.append(Keyboard.element);
     system = new DivElement();
     output.append(system);
 

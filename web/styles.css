@@ -12,3 +12,42 @@ html, body {
   padding: 20px;
   text-align: center;
 }
+
+.key {
+    width: 42px;
+    height: 42px;
+    position: relative;
+    border: 1px solid black;
+    margin: 3px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.key > div {
+    position:absolute;
+    left: 2px;
+}
+
+.key > .upper {
+    top: 2px;
+}
+
+.key > .lower {
+    bottom: 2px;
+}
+
+.pressed {
+    background-color: yellow;
+}
+
+.keyRow {
+
+}
+
+.keyboard {
+
+}
+
+.spacebar {
+    width: 392px;
+}
