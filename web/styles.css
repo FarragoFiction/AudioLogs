@@ -37,13 +37,18 @@ html, body {
     width: 100%;
     height: 100%;
     position: absolute;
-    border: 1px solid black;
+    border: 3px solid #DDDDDD;
     box-sizing:border-box;
     z-index: 100;
 
     border-radius:21px;
-    background-color: #DDDDDD;
+    background-color: #A8A8A8;
     cursor: pointer;
+
+    box-shadow:0 4px 0 #888888, inset 0 2px 3px #888888;
+
+    color: #FFFFFF;
+    text-shadow: 0 0 2px #5A5A5A;
 }
 
 .key .stem, .key .base {
@@ -54,15 +59,16 @@ html, body {
 }
 
 .key .base {
-    background-color: #CCCCCC;
+    background-color: #888888;
     z-index: 50;
 
     top:21px;
-    height:30px;
+    height:32px;
+    box-shadow: inset 0 28px 0 #707070;
 }
 
 .key .stem {
-    background-color: #888888;
+    background-image: linear-gradient(#202020, #707070);
     z-index: 0;
 
     bottom:21px;
@@ -119,12 +125,13 @@ html, body {
 }
 
 .keyboard {
-    border: 1px solid red;
+    /*border: 1px solid red;*/
     height:320px;
     width:550px;
     box-sizing:border-box;
     padding-top: 30px;
     overflow:hidden;
+    background-color: #202020;
 }
 
 .spacebar {
