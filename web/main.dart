@@ -22,7 +22,7 @@ int legibilityLevelInMS = 20;
 const String tapeIn = "casettein";
 const String tapeOut = "cassetteout";
 const String podUrl = "http://farragnarok.com/PodCasts/";
-const String audioUrl = "Audio/";
+const String audioUrl = "audio/";
 
 Future<void> main() async {
     new Audio();
