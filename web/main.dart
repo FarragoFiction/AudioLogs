@@ -21,17 +21,21 @@ Element system;
 int legibilityLevelInMS = 20;
 const String tapeIn = "casettein";
 const String tapeOut = "cassetteout";
+const String podUrl = "http://farragnarok.com/PodCasts/";
+const String audioUrl = "audio/";
 
-void main() {
-    Keyboard.init();
+Future<void> main() async {
+    new Audio();
+    Audio.SYSTEM.rand = rand;
+
+    await Keyboard.init();
+
     rand.nextInt();
     final Element output = querySelector("#output");
     output.append(Keyboard.element);
     system = new DivElement();
     output.append(system);
 
-    new Audio("http://farragnarok.com/PodCasts");
-    Audio.SYSTEM.rand = rand;
     final AudioChannel voice = Audio.createChannel("Voice");
     final AudioChannel bg = Audio.createChannel("BG");
 
@@ -53,7 +57,7 @@ void main() {
         systemPrint("wrrr...click!");
         changePassPhrase(input.value);
         try {
-            await Audio.SYSTEM.load(input.value); //if theres a problem here, it will be caught.
+            await Audio.SYSTEM.load("$podUrl${input.value}"); //if theres a problem here, it will be caught.
         } on ProgressEvent {
             systemPrint("Error! Unknown Passphrase: ${input.value}");
             await bullshitCorruption(bg, input.value);
@@ -61,7 +65,7 @@ void main() {
         }
         //Playlist playList = new Playlist(<String>[input.value]);
 
-        final Playlist playList = new Playlist(<String>[tapeIn,input.value,tapeOut]);
+        final Playlist playList = new Playlist(<String>[tapeIn,"$podUrl${input.value}",tapeOut]);
         playList.output.connectNode(Audio.SYSTEM.channels["Voice"].volumeNode);
         await playList.play();
         systemPrint("Passphrase Accepted!");
@@ -84,7 +88,7 @@ Future<void> bullshitCorruption(AudioChannel bg, String value) async {
     AudioBufferSourceNode node = await Audio.play(
         tapeIn, "Voice");
     await gigglesnort(value);
-    final String music = rand.pickFrom(soothingMusic);
+    final String music = "$podUrl${rand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
     bg.volumeParam.value = 0.8;
@@ -105,7 +109,7 @@ Future<void> gigglesnort(String value) async {
         }
 
         final AudioBufferSourceNode node = await Audio.play(
-            channel, channel, pitchVar: 13.0)
+            "$podUrl$channel", channel, pitchVar: 13.0)
             ..playbackRate.value = 0.1;
         fuckAround(node, legibilityLevelInMS/1000, 1);
     }
