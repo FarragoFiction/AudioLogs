@@ -22,7 +22,18 @@ html, body {
     box-sizing:border-box;
 }
 
+.key div {
+    transition-property: top, bottom, height;
+    transition-duration: 0.08s;
+    transition-timing-function: ease-in;
+}
+
+.pressed div {
+    transition-timing-function: ease-out;
+}
+
 .key .head {
+    top: 0;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -55,7 +66,7 @@ html, body {
     z-index: 0;
 
     bottom:21px;
-    height:500px;
+    height:300px;
 }
 
 .row1 .base, .row1 .stem {
@@ -98,12 +109,22 @@ html, body {
     top: 30px;
 }
 
+.pressed .stem {
+    bottom:30px;
+    height: 309px;
+}
+
 .keyRow {
 
 }
 
 .keyboard {
-    border: 1px solid red
+    border: 1px solid red;
+    height:320px;
+    width:550px;
+    box-sizing:border-box;
+    padding-top: 30px;
+    overflow:hidden;
 }
 
 .spacebar {
