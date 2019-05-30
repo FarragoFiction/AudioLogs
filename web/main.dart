@@ -19,8 +19,8 @@ List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shoo
 Element system;
 //smaller numbers mean more changes means less understandable at once
 int legibilityLevelInMS = 20;
-const String tapeIn = "casettein";
-const String tapeOut = "cassetteout";
+const String tapeIn = "audio/casettein";
+const String tapeOut = "audio/cassetteout";
 const String podUrl = "http://farragnarok.com/PodCasts/";
 const String audioUrl = "audio/";
 
