@@ -32,7 +32,7 @@ Future<void> main() async {
 
     rand.nextInt();
     final Element output = querySelector("#output");
-    output.append(Keyboard.element);
+    querySelector("#keyboard").append(Keyboard.element);
     system = new DivElement();
     output.append(system);
 

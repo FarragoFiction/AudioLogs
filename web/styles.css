@@ -1,11 +1,17 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
 html, body {
-  width: 100%;
-  height: 100%;
+  /*width: 100%;
+  height: 100%;*/
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
+}
+
+.container {
+    margin: 0 auto 0 auto;
+    width:1280px;
+    height: 740px;
 }
 
 #output {
@@ -95,7 +101,7 @@ html, body {
 }
 
 .key .upper {
-    top: 2px;
+    top: 1px;
 }
 
 .key .middle {
@@ -104,7 +110,7 @@ html, body {
 }
 
 .key .lower {
-    bottom: 2px;
+    bottom: 1px;
 }
 
 .pressed .head {
@@ -131,9 +137,70 @@ html, body {
     box-sizing:border-box;
     padding-top: 30px;
     overflow:hidden;
-    background-color: #202020;
+    /*background-color: #202020;*/
+    text-align:center;
 }
 
 .spacebar {
     width: 392px;
+}
+
+.keyboardArea {
+    width: 650px;
+    height: 350px;
+    position:absolute;
+    margin:0 auto 0 auto;
+    left: 315px;
+    bottom: -230px;
+}
+
+.keyboardContainer {
+    top:10px;
+    position:absolute;
+    left:50px;
+}
+
+.keyboardUnderlay {
+    width: 100%;
+    height:100%;
+
+    background-image: url("images/keyboard_underlay.png");
+    position:absolute;
+}
+
+.keyboardBackground {
+    width:550px;
+    height:320px;
+    background-color: #202020;
+    top: 10px;
+    position:absolute;
+
+    left:50px;
+}
+
+.keyboardOverlayTop {
+    width: 650px;
+    height: 42px;
+    top: 0;
+
+    background-image: url("images/keyboard_overlay_top.png");
+    position:absolute;
+    z-index:200;
+}
+
+.keyboardOverlayBottom {
+    width: 650px;
+    height: 44px;
+    bottom: 0;
+
+    background-image: url("images/keyboard_overlay_bottom.png");
+    position:absolute;
+    z-index:200;
+}
+
+.boombox {
+    position:relative;
+    width:1280px;
+    height: 500px;
+    background-color: #878d98;
 }
