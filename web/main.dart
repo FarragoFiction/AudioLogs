@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:html';
+import "dart:math" as Math;
 import 'dart:web_audio';
 
 import 'package:AudioLib/AudioLib.dart';
@@ -25,9 +26,123 @@ const String tapeOut = "audio/cassetteout";
 const String podUrl = "http://farragnarok.com/PodCasts/";
 const String audioUrl = "audio/";
 
-final List<StoppedFlagNodeWrapper> nodes = new List<StoppedFlagNodeWrapper>();
+final List<StoppedFlagNodeWrapper> nodes = <StoppedFlagNodeWrapper>[];
 
 bool playing = false;
+PlayerMode mode = PlayerMode.typing;
+const int switchTime = 800;
+enum PlayerMode {
+    typing,
+    transition,
+    playing
+}
+
+void switchToPlaying() {
+    if (mode != PlayerMode.typing) { return; }
+    mode = PlayerMode.transition;
+    Keyboard.disable();
+
+    new Future<void>.delayed(Duration(milliseconds: switchTime),(){
+        mode = PlayerMode.playing;
+
+        cassette.element.style.top = "100px";
+    });
+}
+
+void switchToTyping() {
+    if (mode != PlayerMode.playing) { return; }
+    mode = PlayerMode.transition;
+
+    new Future<void>.delayed(Duration(seconds:2),(){
+        mode = PlayerMode.typing;
+        Keyboard.enable();
+
+        cassette.element.style.top = "300px";
+    });
+}
+
+String caption = "";
+const int maxLabelLength = 23;
+
+void writeLetter(String glyph) {
+    if(caption.length < maxLabelLength) {
+        caption = "$caption$glyph";
+        updateCaption();
+    }
+}
+
+void backspace() {
+    if (caption.isNotEmpty) {
+        caption = caption.substring(0, Math.min(caption.length - 1, maxLabelLength-1));
+        updateCaption();
+    }
+}
+
+void updateCaption() {
+    print("caption: $caption");
+    String text = caption;
+    if (caption.length > maxLabelLength) {
+        text = "${text.substring(0, maxLabelLength-1)}…";
+    }
+    if (text.length < maxLabelLength) {
+        text = "${text}_";
+    }
+    cassette.label.text = text;
+    changePassPhrase(caption);
+}
+
+Future<void> pressPlay([Event e]) async {
+    if (mode != PlayerMode.playing || playing) {
+        return;
+    }
+
+    playing = true;
+    systemPrint("wrrr...click!");
+    final String file = "$podUrl$caption";
+    try {
+        await Audio.SYSTEM.load(file); //if theres a problem here, it will be caught.
+    } on LoaderException {
+        systemPrint("Error! Unknown Passphrase: $caption");
+        if (playing) {
+            await bullshitCorruption(caption);
+        }
+        return;
+    }
+    //in git there is a playlist here i can use to understand
+    if (playing) {
+        await Audio.SYSTEM.load(file);
+        if (!playing) { return; }
+        nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
+    systemPrint("Passphrase Accepted!");
+    }
+
+    playButton.press();
+    stopButton.release(true);
+    ejectButton.release(true);
+}
+
+Future<void> pressStop([Event e]) async {
+    if (mode != PlayerMode.playing || !playing) {
+        return;
+    }
+
+    stop();
+
+    stopButton.press();
+    playButton.release(true);
+    ejectButton.release(true);
+}
+
+Future<void> pressEject([Event e]) async {
+    if (mode != PlayerMode.playing) {
+        return;
+    }
+
+    pressStop();
+    ejectButton.press(true);
+
+    switchToTyping();
+}
 
 Future<void> main() async {
     new Audio();
@@ -36,60 +151,30 @@ Future<void> main() async {
     rand.nextInt();
 
     await setupUi();
+    Keyboard.keyCallback = writeLetter;
+    Keyboard.backspaceCallback = backspace;
 
     final Element output = querySelector("#output");
 
     system = new DivElement();
     output.append(system);
 
-    final AudioChannel voice = Audio.createChannel("Voice");
-    final AudioChannel bg = Audio.createChannel("BG");
+    Audio.createChannel("Voice");
+    Audio.createChannel("BG", 0.8);
 
-    String initPW = "Passphrase";
+    String initPW = "";
     if(Uri.base.queryParameters['passPhrase'] != null) {
         initPW = Uri.base.queryParameters['passPhrase'];
     }
 
-    final InputElement input = new InputElement()..value = initPW;
-    output.append(input);
-    changePassPhrase(input.value);
+    caption = initPW;
 
-
-    final ButtonElement button = new ButtonElement()..text = "Play";
-    final ButtonElement stopButton = new ButtonElement()..text = "Stop";
-    button.autofocus = true;
-    output.append(button);
-    output.append(stopButton);
-    stopButton.onClick.listen((Event e)
-    {
-        playing = false;
-        plzFuckingStop();
-    });
-
+    updateCaption();
     output.append(Audio.slider(Audio.SYSTEM.volumeParam));
-    button.onClick.listen((MouseEvent event) async {
-        playing = true;
-        stopButton.autofocus = true;
-        systemPrint("wrrr...click!");
-        changePassPhrase(input.value);
-        final String file = "$podUrl${input.value}";
-        try {
-            await Audio.SYSTEM.load(file); //if theres a problem here, it will be caught.
-        } on LoaderException {
-            systemPrint("Error! Unknown Passphrase: ${input.value}");
-            if (playing) {
-                await bullshitCorruption(bg, input.value);
-            }
-            return;
-        }
-        //in git there is a playlist here i can use to understand
-        if (playing) {
-            await Audio.SYSTEM.load(file);
-            if (!playing) { return; }
-            nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
-            systemPrint("Passphrase Accepted!");
-        }
-    });
+
+    playButton.element.onClick.listen(pressPlay);
+    stopButton.element.onClick.listen(pressStop);
+    ejectButton.element.onClick.listen(pressEject);
 }
 
 void systemPrint(String text, [int size = 18]) {
@@ -98,13 +183,13 @@ void systemPrint(String text, [int size = 18]) {
     const String fontColor = "#000000";
     final String consortCss = "font-family: $fontFamiily;color:$fontColor;font-size: ${size}px;font-weight: $fontWeight;";
     fancyPrint("Gigglette Player: $text",consortCss);
-    final DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
+    /*final DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
     div.text = text;
     system.text = "";
-    system.append(div);
+    system.append(div);*/
 }
 
-Future<void> bullshitCorruption(AudioChannel bg, String value) async {
+Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
     await gigglesnort(value);
@@ -115,7 +200,6 @@ Future<void> bullshitCorruption(AudioChannel bg, String value) async {
     if(!playing) { return; }
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
-    bg.volumeParam.value = 0.8;
     print("legibilitiy level is $legibilityLevelInMS ;)");
     fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
 }
@@ -258,9 +342,12 @@ Future<void> fuckAroundMusic(StoppedFlagNodeWrapper wrapper, double rate, int di
 
 }
 
-void plzFuckingStop() {
+void stop() {
+    if (!playing) { return; }
     playing = false;
-    nodes.forEach((StoppedFlagNodeWrapper wrapper) => wrapper.node.stop());
+    for(final StoppedFlagNodeWrapper wrapper in nodes) {
+        wrapper.node.stop();
+    }
     nodes.clear();
 }
 

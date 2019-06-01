@@ -45,7 +45,7 @@ abstract class Keyboard {
         window.onBlur.listen(refocus);
         window.onMouseUp.listen(onMouseUp);
 
-        Audio.createChannel("keyboard", 0.6);
+        Audio.createChannel("ui", 0.6);
 
         element = makeElement();
     }
@@ -74,6 +74,9 @@ abstract class Keyboard {
     }
 
     static void onKeyDown(KeyboardEvent event) {
+        if (!event.ctrlKey && !event.altKey) {
+            event.preventDefault();
+        }
         if (keys.containsKey(event.key)) {
             keys[event.key].press();
         }
@@ -156,7 +159,7 @@ class Key {
         Keyboard.logger.debug("$this pressed");
         this.element.classes.add("pressed");
 
-        Audio.play("${audioUrl}keydown${rand.nextInt(Keyboard.keySounds)}", "keyboard");
+        Audio.play("${audioUrl}keydown${rand.nextInt(Keyboard.keySounds)}", "ui");
 
         Keyboard.pressKey(this);
     }
@@ -169,7 +172,7 @@ class Key {
         Keyboard.logger.debug("$this released");
         this.element.classes.remove("pressed");
 
-        Audio.play("${audioUrl}keyup${rand.nextInt(Keyboard.keySounds)}", "keyboard");
+        Audio.play("${audioUrl}keyup${rand.nextInt(Keyboard.keySounds)}", "ui");
     }
 
     void makeElement() {
@@ -275,7 +278,48 @@ class Cassette {
     }
 }
 
+class UiButton {
+    Element element;
+    String pressedClass;
+
+    bool pressed = false;
+
+    UiButton(String className, String this.pressedClass) {
+        element = new DivElement()..className = className;
+    }
+
+    void press([bool silent = false]) {
+        if (pressed) { return; }
+
+        this.pressed = false;
+        this.element.classes.remove(pressedClass);
+
+        if (!silent) {
+            Audio.play("${audioUrl}keydown0", "ui");
+        }
+    }
+
+    void release([bool silent = false]) {
+        if (!pressed) { return; }
+
+        this.pressed = true;
+        this.element.classes.add(pressedClass);
+
+        if (!silent) {
+            Audio.play("${audioUrl}keydown0", "ui");
+        }
+    }
+}
+
+Cassette cassette;
+UiButton playButton;
+UiButton stopButton;
+UiButton ejectButton;
+
 Future<void> setupUi() async {
+    final Element container = querySelector("#container");
+    final Element topButtons = querySelector("#topbuttons");
+
     await Keyboard.init();
     querySelector("#keyboard").append(Keyboard.element);
 
@@ -285,7 +329,25 @@ Future<void> setupUi() async {
         new Speaker(container, "speaker");
     }
 
-    final Cassette cassette = new Cassette();
+    playButton = new UiButton("topbutton", "topbuttonpressed")..element.text="Play";
+    stopButton = new UiButton("topbutton", "topbuttonpressed")..element.text="Stop";
+    ejectButton = new UiButton("topbutton", "topbuttonpressed")..element.text="Eject";
 
-    querySelector("#output").append(cassette.element);
+    topButtons.append(playButton.element);
+    topButtons.append(stopButton.element);
+    topButtons.append(ejectButton.element);
+
+    cassette = new Cassette();
+
+    container.append(cassette.element);
+
+    container.append(new ButtonElement()
+        ..style.position="absolute"
+        ..style.left = "360px"
+        ..style.top = "350px"
+        ..text = "(TEMP) insert cassette"
+        ..onClick.listen((Event e){
+            switchToPlaying();
+        })
+    );
 }
