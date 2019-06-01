@@ -254,3 +254,68 @@ html, body {
 .speakerLarge .speakerOuter {
     background-image: url("images/speaker_large_outer.png");
 }
+
+.cassette {
+    position:relative;
+
+    width:250px;
+    height:160px;
+}
+
+.cassette .overlay {
+    width:100%;
+    height:100%;
+
+    position:absolute;
+    top:0;
+    left:0;
+
+    background-image: url("images/cassette.png");
+}
+
+.cassette .spool {
+    position:absolute;
+    top:72px;
+
+    width:26px;
+    height:26px;
+
+    border-radius:50%;
+    border: 15px solid #e4e5e1;
+    box-shadow: 0 0 0 20px #202020;
+}
+
+.cassette .spool div {
+    position:absolute;
+    width: 20px;
+    height: 4px;
+    border: 10px solid #e4e5e1;
+    border-top: 0 none transparent;
+    border-bottom: 0 none transparent;
+
+    left:50%;
+    top:50%;
+}
+
+.cassette .left {
+    left:71px;
+    transform: translate(-50%,-50%);
+}
+
+.cassette .right {
+    right:71px;
+    transform: translate(50%,-50%);
+}
+
+.cassette .label {
+    position:absolute;
+    width:195px;
+    left:35px;
+    height: 20px;
+    top:28px;
+    /*border:1px solid red;*/
+    box-sizing: border-box;
+    font: bold 14px courier, courier new, monospace;
+    color:#655040;
+    text-align:left;
+}

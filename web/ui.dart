@@ -11,7 +11,7 @@ abstract class Keyboard {
         <Key>[Key("1","!"), Key("2","@"), Key("3","#"), Key("4","\$"), Key("5","%"), Key("6","^"), Key("7","&"), Key("8","*"), Key("9","("), Key("0",")"), Key("Backspace","","←")],
         <Key>[Key("q","Q","Q"), Key("w","W","W"), Key("e","E","E"), Key("r","R","R"), Key("t","T","T"), Key("y","Y","Y"), Key("u","U","U"), Key("i","I","I"), Key("o","O","O"), Key("p","P","P")],
         <Key>[Key("a","A","A"), Key("s","S","S"), Key("d","D","D"), Key("f","F","F"), Key("g","G","G"), Key("h","H","H"), Key("j","J","J"), Key("k","K","K"), Key("l","L","L"), Key("'","\"")],
-        <Key>[Key("Shift","","▲")..toggleOnClick=true,Key("z","Z","Z"), Key("x","X","X"), Key("c","C","C"), Key("v","V","V"), Key("b","B","B"), Key("n","N","N"), Key("m","M","M"), Key(","), Key(".")],
+        <Key>[Key("Shift","","▲")..toggleOnClick=true,Key("z","Z","Z"), Key("x","X","X"), Key("c","C","C"), Key("v","V","V"), Key("b","B","B"), Key("n","N","N"), Key("m","M","M"), Key("."), Key("?")],
         <Key>[SpaceKey(" ")]
     ];
     static const int keySounds = 7;
@@ -21,6 +21,8 @@ abstract class Keyboard {
 
     static Key shift = keys["Shift"];
     static Key backspace = keys["Backspace"];
+
+    static bool enabled = true;
 
     static Future<void> init() async {
         await Future.wait(new List<int>.generate(keySounds, (int i) => i).map((int i) => Audio.SYSTEM.load("${audioUrl}keydown$i")));
@@ -98,6 +100,17 @@ abstract class Keyboard {
         }
         return board;
     }
+
+    static void disable() {
+        enabled = false;
+        for (final Key key in keys.values) {
+            key.release();
+        }
+    }
+
+    static void enable() {
+        enabled = true;
+    }
 }
 
 class Key {
@@ -121,6 +134,7 @@ class Key {
     }
 
     void press([bool click = false]) {
+        if (!Keyboard.enabled) { return; }
         if (pressed) { return; }
         pressed = true;
         if (click) {
@@ -218,6 +232,36 @@ class Speaker {
     }
 }
 
+class Cassette {
+    Element element;
+    Element leftSpool;
+    Element rightSpool;
+    Element label;
+
+    Cassette() {
+        this.element = new DivElement()..className="cassette";
+
+        leftSpool = makeSpool()..classes.add("left");
+        rightSpool = makeSpool()..classes.add("right");
+        label = new DivElement()..className="label"..text="12345678901234567890123";
+
+        element
+            ..append(leftSpool)
+            ..append(rightSpool)
+            ..append(new DivElement()..className="overlay")
+            ..append(label);
+    }
+
+    static Element makeSpool() {
+        return new DivElement()
+            ..className="spool"
+            ..append(new DivElement()..style.transform = "translate(-50%,-50%)")
+            ..append(new DivElement()..style.transform = "translate(-50%,-50%) rotate(60deg)")
+            ..append(new DivElement()..style.transform = "translate(-50%,-50%) rotate(-60deg)")
+        ;
+    }
+}
+
 Future<void> setupUi() async {
     await Keyboard.init();
     querySelector("#keyboard").append(Keyboard.element);
@@ -227,4 +271,8 @@ Future<void> setupUi() async {
     for (final Element container in speakers) {
         new Speaker(container, "speaker");
     }
+
+    final Cassette cassette = new Cassette();
+
+    querySelector("#output").append(cassette.element);
 }
