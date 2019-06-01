@@ -27,6 +27,8 @@ const String audioUrl = "audio/";
 
 final List<StoppedFlagNodeWrapper> nodes = new List<StoppedFlagNodeWrapper>();
 
+bool playing = false;
+
 Future<void> main() async {
     new Audio();
     Audio.SYSTEM.rand = rand;
@@ -60,25 +62,33 @@ Future<void> main() async {
     output.append(stopButton);
     stopButton.onClick.listen((Event e)
     {
+        playing = false;
         plzFuckingStop();
     });
 
     output.append(Audio.slider(Audio.SYSTEM.volumeParam));
     button.onClick.listen((MouseEvent event) async {
+        playing = true;
         stopButton.autofocus = true;
         systemPrint("wrrr...click!");
         changePassPhrase(input.value);
+        final String file = "$podUrl${input.value}";
         try {
-            await Audio.SYSTEM.load("$podUrl${input.value}"); //if theres a problem here, it will be caught.
+            await Audio.SYSTEM.load(file); //if theres a problem here, it will be caught.
         } on LoaderException {
             systemPrint("Error! Unknown Passphrase: ${input.value}");
-            await bullshitCorruption(bg, input.value);
+            if (playing) {
+                await bullshitCorruption(bg, input.value);
+            }
             return;
         }
         //in git there is a playlist here i can use to understand
-        nodes.add(new StoppedFlagNodeWrapper(await Audio.play(
-            "$podUrl${input.value}", "Voice")));
-        systemPrint("Passphrase Accepted!");
+        if (playing) {
+            await Audio.SYSTEM.load(file);
+            if (!playing) { return; }
+            nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
+            systemPrint("Passphrase Accepted!");
+        }
     });
 }
 
@@ -100,6 +110,9 @@ Future<void> bullshitCorruption(AudioChannel bg, String value) async {
     await gigglesnort(value);
     final String music = "$podUrl${rand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
+    if(!playing) { return; }
+    await Audio.SYSTEM.load(music);
+    if(!playing) { return; }
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     bg.volumeParam.value = 0.8;
@@ -112,10 +125,13 @@ Future<void> gigglesnort(String value) async {
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
+    if(!playing) { return; }
     for(final String channel in corruptChannels) {
-
+        final String file = "$podUrl$channel";
+        await Audio.SYSTEM.load(file);
+        if(!playing) { return; }
         final AudioBufferSourceNode node = await Audio.play(
-            "$podUrl$channel", "Voice", pitchVar: 13.0)
+            file, "Voice", pitchVar: 13.0)
             ..playbackRate.value = 0.1;
         nodes.add(new StoppedFlagNodeWrapper(node));
         fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
@@ -243,6 +259,7 @@ Future<void> fuckAroundMusic(StoppedFlagNodeWrapper wrapper, double rate, int di
 }
 
 void plzFuckingStop() {
+    playing = false;
     nodes.forEach((StoppedFlagNodeWrapper wrapper) => wrapper.node.stop());
     nodes.clear();
 }
