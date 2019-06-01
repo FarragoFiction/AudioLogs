@@ -207,3 +207,24 @@ class SpaceKey extends Key {
     }
 }
 
+class Speaker {
+    Element container;
+    Element inner;
+
+    Speaker(Element this.container, String className) {
+        this.inner = new DivElement()..className = "$className speakerInner";
+        container.append(inner);
+        container.append(new DivElement()..className="$className speakerOuter");
+    }
+}
+
+Future<void> setupUi() async {
+    await Keyboard.init();
+    querySelector("#keyboard").append(Keyboard.element);
+
+    final ElementList<Element> speakers = querySelectorAll(".speakerContainer");
+
+    for (final Element container in speakers) {
+        new Speaker(container, "speaker");
+    }
+}

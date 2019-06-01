@@ -28,11 +28,12 @@ Future<void> main() async {
     new Audio();
     Audio.SYSTEM.rand = rand;
 
-    await Keyboard.init();
-
     rand.nextInt();
+
+    await setupUi();
+
     final Element output = querySelector("#output");
-    querySelector("#keyboard").append(Keyboard.element);
+
     system = new DivElement();
     output.append(system);
 
