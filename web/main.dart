@@ -112,14 +112,9 @@ Future<void> gigglesnort(String value) async {
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
     for(final String channel in corruptChannels) {
-        try {
-            AudioChannel newchannel = Audio.createChannel(channel);
-        } on Exception {
-            //it already exists, so we don't need to do anything
-        }
 
         final AudioBufferSourceNode node = await Audio.play(
-            "$podUrl$channel", channel, pitchVar: 13.0)
+            "$podUrl$channel", "Voice", pitchVar: 13.0)
             ..playbackRate.value = 0.1;
         nodes.add(new StoppedFlagNodeWrapper(node));
         fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
