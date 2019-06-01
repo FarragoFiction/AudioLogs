@@ -1,7 +1,9 @@
 import "dart:html";
+import "dart:web_audio";
 
 import "package:AudioLib/AudioLib.dart";
 import "package:CommonLib/Logging.dart";
+import "package:CommonLib/Utility.dart";
 
 import "main.dart";
 
@@ -24,9 +26,14 @@ abstract class Keyboard {
 
     static bool enabled = true;
 
+    static Lambda<String> keyCallback;
+    static Action backspaceCallback;
+
     static Future<void> init() async {
-        await Future.wait(new List<int>.generate(keySounds, (int i) => i).map((int i) => Audio.SYSTEM.load("${audioUrl}keydown$i")));
-        await Future.wait(new List<int>.generate(keySounds, (int i) => i).map((int i) => Audio.SYSTEM.load("${audioUrl}keyup$i")));
+        final List<Future<AudioBuffer>> toLoad = <Future<AudioBuffer>>[];
+        toLoad.addAll(new List<int>.generate(keySounds, (int i) => i).map((int i) => Audio.SYSTEM.load("${audioUrl}keydown$i")));
+        toLoad.addAll(new List<int>.generate(keySounds, (int i) => i).map((int i) => Audio.SYSTEM.load("${audioUrl}keyup$i")));
+        await Future.wait(toLoad);
 
         // ignore: unnecessary_statements
         _keyData; // this is actually essential, since it forces the lazy init on _keyData to happen, which populates keys
@@ -55,8 +62,14 @@ abstract class Keyboard {
 
         if (key == backspace) {
             logger.debug("Backspace!");
+            if (backspaceCallback != null) {
+                backspaceCallback();
+            }
         } else {
             logger.debug("Typed $glyph");
+            if (keyCallback != null) {
+                keyCallback(glyph);
+            }
         }
     }
 
@@ -243,7 +256,7 @@ class Cassette {
 
         leftSpool = makeSpool()..classes.add("left");
         rightSpool = makeSpool()..classes.add("right");
-        label = new DivElement()..className="label"..text="12345678901234567890123";
+        label = new DivElement()..className="label";
 
         element
             ..append(leftSpool)

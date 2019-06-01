@@ -5,6 +5,7 @@ import 'dart:web_audio';
 import 'package:AudioLib/AudioLib.dart';
 import 'package:CommonLib/Logging.dart';
 import 'package:CommonLib/Random.dart';
+import "package:LoaderLib/Loader.dart";
 
 import "ui.dart";
 
@@ -69,7 +70,7 @@ Future<void> main() async {
         changePassPhrase(input.value);
         try {
             await Audio.SYSTEM.load("$podUrl${input.value}"); //if theres a problem here, it will be caught.
-        } on ProgressEvent {
+        } on LoaderException {
             systemPrint("Error! Unknown Passphrase: ${input.value}");
             await bullshitCorruption(bg, input.value);
             return;
