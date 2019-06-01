@@ -243,6 +243,7 @@ Future<void> fuckAroundMusic(StoppedFlagNodeWrapper wrapper, double rate, int di
 
 void plzFuckingStop() {
     nodes.forEach((StoppedFlagNodeWrapper wrapper) => wrapper.node.stop());
+    nodes.clear();
 }
 
 //because for some damn reason i can't detect if shit is done
