@@ -66,7 +66,7 @@ Future<void> main() async {
         }
         //Playlist playList = new Playlist(<String>[input.value]);
 
-        final Playlist playList = new Playlist(<String>[tapeIn,"$podUrl${input.value}",tapeOut]);
+        final Playlist playList = new Playlist(["$podUrl${input.value}"]);
         playList.output.connectNode(Audio.SYSTEM.channels["Voice"].volumeNode);
         await playList.play();
         systemPrint("Passphrase Accepted!");
@@ -86,8 +86,8 @@ void systemPrint(String text, [int size = 18]) {
 }
 
 Future<void> bullshitCorruption(AudioChannel bg, String value) async {
-    AudioBufferSourceNode node = await Audio.play(
-        tapeIn, "Voice");
+    //AudioBufferSourceNode node = await Audio.play(
+    //    tapeIn, "Voice");
     await gigglesnort(value);
     final String music = "$podUrl${rand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
