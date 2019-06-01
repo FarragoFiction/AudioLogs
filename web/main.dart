@@ -24,6 +24,8 @@ const String tapeOut = "audio/cassetteout";
 const String podUrl = "http://farragnarok.com/PodCasts/";
 const String audioUrl = "audio/";
 
+final List<StoppedFlagNodeWrapper> nodes = new List<StoppedFlagNodeWrapper>();
+
 Future<void> main() async {
     new Audio();
     Audio.SYSTEM.rand = rand;
@@ -51,10 +53,18 @@ Future<void> main() async {
 
 
     final ButtonElement button = new ButtonElement()..text = "Play";
+    final ButtonElement stopButton = new ButtonElement()..text = "Stop";
     button.autofocus = true;
     output.append(button);
+    output.append(stopButton);
+    stopButton.onClick.listen((Event e)
+    {
+        plzFuckingStop();
+    });
+
     output.append(Audio.slider(Audio.SYSTEM.volumeParam));
     button.onClick.listen((MouseEvent event) async {
+        stopButton.autofocus = true;
         systemPrint("wrrr...click!");
         changePassPhrase(input.value);
         try {
@@ -64,11 +74,9 @@ Future<void> main() async {
             await bullshitCorruption(bg, input.value);
             return;
         }
-        //Playlist playList = new Playlist(<String>[input.value]);
-
-        final Playlist playList = new Playlist(["$podUrl${input.value}"]);
-        playList.output.connectNode(Audio.SYSTEM.channels["Voice"].volumeNode);
-        await playList.play();
+        //in git there is a playlist here i can use to understand
+        nodes.add(new StoppedFlagNodeWrapper(await Audio.play(
+            "$podUrl${input.value}", "Voice")));
         systemPrint("Passphrase Accepted!");
     });
 }
@@ -92,9 +100,10 @@ Future<void> bullshitCorruption(AudioChannel bg, String value) async {
     final String music = "$podUrl${rand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
+    nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     bg.volumeParam.value = 0.8;
     print("legibilitiy level is $legibilityLevelInMS ;)");
-    fuckAroundMusic(nodeBG, 0.2, 1);
+    fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
 }
 
 Future<void> gigglesnort(String value) async {
@@ -112,7 +121,8 @@ Future<void> gigglesnort(String value) async {
         final AudioBufferSourceNode node = await Audio.play(
             "$podUrl$channel", channel, pitchVar: 13.0)
             ..playbackRate.value = 0.1;
-        fuckAround(node, legibilityLevelInMS/1000, 1);
+        nodes.add(new StoppedFlagNodeWrapper(node));
+        fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
     }
 }
 
@@ -179,8 +189,8 @@ int convertSentenceToNumber(String sentence) {
     return ret;
 }
 
-Future<void> fuckAround(AudioBufferSourceNode node, double rate, int direction) async {
-    node.playbackRate.value = rate;
+Future<void> fuckAround(StoppedFlagNodeWrapper wrapper, double rate, int direction) async {
+    wrapper.node.playbackRate.value = rate;
     if(rate >1000/legibilityLevelInMS || rate > 1.3) {
         rate = 0.1;
         direction = 1;
@@ -208,14 +218,15 @@ Future<void> fuckAround(AudioBufferSourceNode node, double rate, int direction) 
     if(legibilityLevelInMS < 200) {
         next = rand.nextIntRange(200, 1000);
     }
-    new Timer(Duration(milliseconds: next), ()
-    {
-        fuckAround(node, rate, direction);
-    });
+    if(!wrapper.isStopped) {
+        new Timer(Duration(milliseconds: next), () =>
+            fuckAround(wrapper, rate, direction));
+    }
+
 }
 
-Future<void> fuckAroundMusic(AudioBufferSourceNode node, double rate, int direction) async {
-    node.playbackRate.value = rate;
+Future<void> fuckAroundMusic(StoppedFlagNodeWrapper wrapper, double rate, int direction) async {
+    wrapper.node.playbackRate.value = rate;
     if(rate >0.7) {
         direction = -1;
     }else if(rate < 0.1) {
@@ -228,8 +239,24 @@ Future<void> fuckAroundMusic(AudioBufferSourceNode node, double rate, int direct
         direction = direction * -1;
     }
 
-    new Timer(Duration(milliseconds: 20), ()
-    {
-        fuckAroundMusic(node, rate, direction);
-    });
+    if(!wrapper.isStopped) {
+        new Timer(Duration(milliseconds: 20), () =>
+            fuckAroundMusic(wrapper, rate, direction));
+    }
+
+}
+
+void plzFuckingStop() {
+    nodes.forEach((StoppedFlagNodeWrapper wrapper) => wrapper.node.stop());
+}
+
+//because for some damn reason i can't detect if shit is done
+class StoppedFlagNodeWrapper {
+    bool isStopped = false;
+    AudioBufferSourceNode node;
+    StoppedFlagNodeWrapper(AudioBufferSourceNode this.node) {
+        node.onEnded.listen((Event e) {
+                isStopped = true;
+        });
+    }
 }
