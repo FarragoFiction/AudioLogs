@@ -12,6 +12,7 @@ html, body {
     margin: 0 auto 0 auto;
     width:1280px;
     height: 740px;
+    position:relative;
 }
 
 #output {
@@ -206,6 +207,29 @@ html, body {
 
 }
 
+.buttons {
+    position:absolute;
+    width:500px;
+    height;50px;
+    top:40px;
+    left:390px;
+    text-align:center;
+}
+
+.topbutton {
+    display:inline-block;
+    width:50px;
+    height:50px;
+    background-color:#808080;
+    margin:2px;
+    cursor:pointer;
+}
+
+.topbuttonpressed {
+    background-color:white;
+    cursor:default;
+}
+
 .speakerContainer {
     position:absolute;
 }
@@ -256,10 +280,12 @@ html, body {
 }
 
 .cassette {
-    position:relative;
+    position:absolute;
 
     width:250px;
     height:160px;
+    left: 515px;
+    top: 300px;
 }
 
 .cassette .overlay {
