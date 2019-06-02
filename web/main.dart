@@ -68,7 +68,10 @@ Future<void> main() async {
         systemPrint("wrrr...click!");
         changePassPhrase(input.value);
         try {
+            print("about to await ${input.value}");
             await Audio.SYSTEM.load("$podUrl${input.value}"); //if theres a problem here, it will be caught.
+            print("done awaiting ${input.value}");
+
         } on ProgressEvent {
             systemPrint("Error! Unknown Passphrase: ${input.value}");
             await bullshitCorruption(bg, input.value);
