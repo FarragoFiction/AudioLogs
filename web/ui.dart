@@ -336,11 +336,11 @@ Future<void> setupUi() async {
         new Speaker(container, "speaker");
     }
 
-    playButton = new UiButton("topbutton", "topbuttonpressed");//..element.text="Play";
+    playButton = new UiButton("topbutton", "topbuttonpressed")..element.title="Play";
     playButton.element.classes..add("glyphicon")..add("glyphicon-play");
-    stopButton = new UiButton("topbutton", "topbuttonpressed");//..element.text="Stop";
+    stopButton = new UiButton("topbutton", "topbuttonpressed")..element.title="Stop";
     stopButton.element.classes..add("glyphicon")..add("glyphicon-stop");
-    ejectButton = new UiButton("topbutton", "topbuttonpressed");//..element.text="Eject";
+    ejectButton = new UiButton("topbutton", "topbuttonpressed")..element.title="Eject";
     ejectButton.element.classes..add("glyphicon")..add("glyphicon-eject");
 
     topButtons.append(playButton.element);
