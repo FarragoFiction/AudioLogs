@@ -127,7 +127,7 @@ Future<void> pressPlay([Event e]) async {
         await Audio.SYSTEM.load(file);
         if (!playing) { return; }
         nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
-    systemPrint("Passphrase Accepted!");
+        systemPrint("Passphrase Accepted!");
     }
 
     playButton.press();
@@ -371,7 +371,7 @@ class StoppedFlagNodeWrapper {
     AudioBufferSourceNode node;
     StoppedFlagNodeWrapper(AudioBufferSourceNode this.node) {
         node.onEnded.listen((Event e) {
-                isStopped = true;
+            isStopped = true;
         });
     }
 }
