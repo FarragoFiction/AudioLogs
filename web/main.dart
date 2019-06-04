@@ -29,6 +29,8 @@ const String audioUrl = "audio/";
 
 final List<StoppedFlagNodeWrapper> nodes = <StoppedFlagNodeWrapper>[];
 
+Element door = querySelector("#door");
+
 bool playing = false;
 PlayerMode mode = PlayerMode.typing;
 //const int switchTime = 2500; // timing more precise, using explicit values now
@@ -50,11 +52,12 @@ void switchToPlaying() {
     cassette.cycleElement();
     cassette.element.classes.remove("cassetteRemove");
     cassette.element.classes.add("cassetteInsert");
+    cassette.element.classes.add("cassetteFront");
 
     Audio.play("${audioUrl}button", "ui");
 
     delay(1250, () { // half way curve switch
-        cassette.element.classes.add("cassetteMoveEnd");
+        cassette.element.classes.remove("cassetteFront");
     });
 
     delay(1500, () { // insertion sound offset
@@ -63,6 +66,10 @@ void switchToPlaying() {
 
     delay(2500,(){ // finished
         mode = PlayerMode.playing;
+        ejectButton.release(true);
+        stopButton.press(true);
+        door.classes.remove("door_open");
+        door.classes.add("door_closed");
     });
 }
 
@@ -74,14 +81,17 @@ void switchToTyping() {
     cassette.element.classes.remove("cassetteInsert");
     cassette.element.classes.add("cassetteRemove");
 
+    door.classes.remove("door_closed");
+    door.classes.add("door_open");
+
     Audio.play("${audioUrl}cassetteout", "ui");
 
     delay(1250, () { // half way curve switch
-        cassette.element.classes.remove("cassetteMoveEnd");
+        cassette.element.classes.add("cassetteFront");
     });
 
-    delay(2300, () {
-        Audio.play("${audioUrl}button", "ui");
+    delay(2300, () { // clunk on typewriter insertion
+        Audio.play("${audioUrl}button", "ui", basePitch: 1.4);
     });
 
     delay(2500,(){ // finished
@@ -174,6 +184,7 @@ Future<void> pressEject([Event e]) async {
     }
 
     pressStop();
+    stopButton.release(true);
     ejectButton.press();
 
     switchToTyping();
@@ -194,8 +205,8 @@ Future<void> main() async {
     system = new DivElement();
     output.append(system);
 
-    Audio.createChannel("Voice");
-    Audio.createChannel("BG", 0.8);
+    Audio.createChannel("Voice", 0.5);
+    Audio.createChannel("BG", 0.4);
 
     String initPW = "";
     if(Uri.base.queryParameters['passPhrase'] != null) {
@@ -210,6 +221,8 @@ Future<void> main() async {
     playButton.element.onClick.listen(pressPlay);
     stopButton.element.onClick.listen(pressStop);
     ejectButton.element.onClick.listen(pressEject);
+
+    ejectButton.press(true);
 }
 
 void systemPrint(String text, [int size = 18]) {

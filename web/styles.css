@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(glyphicon.css);
 
 html, body {
   /*width: 100%;
@@ -153,6 +154,7 @@ html, body {
     margin:0 auto 0 auto;
     left: 315px;
     bottom: -230px;
+    z-index:20;
 }
 
 .keyboardContainer {
@@ -204,30 +206,61 @@ html, body {
     width:1280px;
     height: 500px;
     background-color: #878d98;
+    background-image: url("images/boombox.png");
+}
 
+.door_open, .door_closed {
+    z-index:10;
+    width:282px;
+    height:187px;
+    position:absolute;
+    top:91px;
+    left:499px;
+}
+
+.door_open {
+    background-image: url("images/door_open.png");
+}
+
+.door_closed {
+    background-image: url("images/door_closed.png");
 }
 
 .buttons {
     position:absolute;
     width:500px;
     height;50px;
-    top:40px;
+    top:25px;
     left:390px;
     text-align:center;
 }
 
 .topbutton {
     display:inline-block;
-    width:50px;
-    height:50px;
-    background-color:#808080;
+    width:41px;
+    height:34px;
+    background-color:#4d5057;
     margin:2px;
     cursor:pointer;
+    border: 2px solid #36393d;
+    border-top: 7px solid #656972;
+    border-bottom: 1px solid #36393d;
+    top:4px;
+    position:relative;
+    color:#CCCFCF;
+    font-size:160%;
+    box-sizing:content-box;
+    padding-top:8px;
+    padding-right:1px;
 }
 
 .topbuttonpressed {
-    background-color:white;
+    /*background-color:white;*/
     cursor:default;
+    border-top: 3px solid #656972;
+    top:0;
+    background-color: #44474d;
+    color:#BBBFBF;
 }
 
 .speakerContainer {
@@ -286,6 +319,8 @@ html, body {
     height:160px;
     left: 515px;
     top: 300px;
+
+    transform-origin: center bottom;
 }
 
 .cassette .overlay {
@@ -344,17 +379,19 @@ html, body {
     font: bold 14px courier, courier new, monospace;
     color:#655040;
     text-align:left;
+    white-space:pre;
 }
 
 .cassetteRemove, .cassetteInsert {
     animation-duration: 2.5s;
     animation-name: cassetteMove;
-    animation-timing-function: ease-in;
+    animation-timing-function: ease-out;
     animation-fill-mode: forwards;
 }
 
-.cassetteMoveEnd {
-    animation-timing-function: ease-out;
+.cassetteFront {
+    animation-timing-function: ease-in;
+    z-index:10;
 }
 
 .cassetteRemove {
@@ -382,12 +419,22 @@ html, body {
     0% {
         opacity: 1.0;
         top: 100px;
+        transform: scaleY(1.0);
+        filter: none;
+    }
+    1% {
+        transform: scaleY(0.8);
+        filter: brightness(0.65);
     }
     32% {
         top: 100px;
+        transform: scaleY(0.8);
+        filter: brightness(0.65);
     }
     38% {
         opacity: 1.0;
+        transform: scaleY(1.0);
+        filter: none;
     }
     40% {
         top: 25px;

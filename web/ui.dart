@@ -298,8 +298,8 @@ class UiButton {
     void press([bool silent = false]) {
         if (pressed) { return; }
 
-        this.pressed = false;
-        this.element.classes.remove(pressedClass);
+        this.pressed = true;
+        this.element.classes.add(pressedClass);
 
         if (!silent) {
             Audio.play("${audioUrl}button", "ui", pitchVar: 0.2);
@@ -309,8 +309,8 @@ class UiButton {
     void release([bool silent = false]) {
         if (!pressed) { return; }
 
-        this.pressed = true;
-        this.element.classes.add(pressedClass);
+        this.pressed = false;
+        this.element.classes.remove(pressedClass);
 
         if (!silent) {
             Audio.play("${audioUrl}button", "ui", pitchVar: 0.2);
@@ -336,9 +336,12 @@ Future<void> setupUi() async {
         new Speaker(container, "speaker");
     }
 
-    playButton = new UiButton("topbutton", "topbuttonpressed")..element.text="Play";
-    stopButton = new UiButton("topbutton", "topbuttonpressed")..element.text="Stop";
-    ejectButton = new UiButton("topbutton", "topbuttonpressed")..element.text="Eject";
+    playButton = new UiButton("topbutton", "topbuttonpressed");//..element.text="Play";
+    playButton.element.classes..add("glyphicon")..add("glyphicon-play");
+    stopButton = new UiButton("topbutton", "topbuttonpressed");//..element.text="Stop";
+    stopButton.element.classes..add("glyphicon")..add("glyphicon-stop");
+    ejectButton = new UiButton("topbutton", "topbuttonpressed");//..element.text="Eject";
+    ejectButton.element.classes..add("glyphicon")..add("glyphicon-eject");
 
     topButtons.append(playButton.element);
     topButtons.append(stopButton.element);
@@ -350,7 +353,7 @@ Future<void> setupUi() async {
 
     container.append(new ButtonElement()
         ..style.position="absolute"
-        ..style.left = "360px"
+        ..style.left = "330px"
         ..style.top = "350px"
         ..text = "(TEMP) insert cassette"
         ..onClick.listen((Event e){
