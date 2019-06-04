@@ -276,6 +276,13 @@ class Cassette {
             ..append(new DivElement()..style.transform = "translate(-50%,-50%) rotate(-60deg)")
         ;
     }
+
+    void cycleElement() {
+        if (this.element.parent == null) { return; }
+        Element e = this.element.parent;
+        this.element.remove();
+        e.append(this.element);
+    }
 }
 
 class UiButton {

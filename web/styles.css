@@ -345,3 +345,47 @@ html, body {
     color:#655040;
     text-align:left;
 }
+
+.cassetteRemove, .cassetteInsert {
+    animation-duration: 1s;
+    animation-name: cassetteMove;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+}
+
+.cassetteMoveEnd {
+    animation-timing-function: ease-out;
+}
+
+.cassetteRemove {
+    animation-direction: normal;
+}
+
+.cassetteInsert {
+    animation-direction: reverse;
+}
+
+@keyframes cassetteMove {
+    0% {
+        opacity: 1.0;
+        top: 100px;
+    }
+    30% {
+        opacity: 1.0;
+    }
+    40% {
+        top: 25px;
+        opacity: 0.0;
+    }
+    60% {
+        top: 225px;
+        opacity: 0.0;
+    }
+    70% {
+        opacity: 1.0;
+    }
+    100% {
+        opacity: 1.0;
+        top: 300px;
+    }
+}

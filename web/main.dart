@@ -30,7 +30,7 @@ final List<StoppedFlagNodeWrapper> nodes = <StoppedFlagNodeWrapper>[];
 
 bool playing = false;
 PlayerMode mode = PlayerMode.typing;
-const int switchTime = 800;
+const int switchTime = 1000;
 enum PlayerMode {
     typing,
     transition,
@@ -42,10 +42,17 @@ void switchToPlaying() {
     mode = PlayerMode.transition;
     Keyboard.disable();
 
+    cassette.cycleElement();
+    cassette.element.classes.remove("cassetteRemove");
+    cassette.element.classes.add("cassetteInsert");
+
+    new Future<void>.delayed(Duration(milliseconds: switchTime~/2), () {
+        cassette.element.classes.add("cassetteMoveEnd");
+    });
+
     new Future<void>.delayed(Duration(milliseconds: switchTime),(){
         mode = PlayerMode.playing;
-
-        cassette.element.style.top = "100px";
+        //cassette.element.classes.remove("cassetteMoveEnd");
     });
 }
 
@@ -53,11 +60,18 @@ void switchToTyping() {
     if (mode != PlayerMode.playing) { return; }
     mode = PlayerMode.transition;
 
+    cassette.cycleElement();
+    cassette.element.classes.remove("cassetteInsert");
+    cassette.element.classes.add("cassetteRemove");
+
+    new Future<void>.delayed(Duration(milliseconds: switchTime~/2), () {
+        cassette.element.classes.remove("cassetteMoveEnd");
+    });
+
     new Future<void>.delayed(Duration(seconds:2),(){
         mode = PlayerMode.typing;
         Keyboard.enable();
-
-        cassette.element.style.top = "300px";
+        //cassette.element.classes.remove("cassetteMoveEnd");
     });
 }
 
