@@ -7,6 +7,7 @@ import 'package:AudioLib/AudioLib.dart';
 import 'package:CommonLib/Logging.dart';
 import 'package:CommonLib/Random.dart';
 import "package:LoaderLib/Loader.dart";
+import "package:CommonLib/Utility.dart";
 
 import "ui.dart";
 
@@ -30,11 +31,15 @@ final List<StoppedFlagNodeWrapper> nodes = <StoppedFlagNodeWrapper>[];
 
 bool playing = false;
 PlayerMode mode = PlayerMode.typing;
-const int switchTime = 1000;
+//const int switchTime = 2500; // timing more precise, using explicit values now
 enum PlayerMode {
     typing,
     transition,
     playing
+}
+
+Future<void> delay(int ms, Action action) {
+    return new Future<void>.delayed(Duration(milliseconds: ms), action);
 }
 
 void switchToPlaying() {
@@ -46,13 +51,18 @@ void switchToPlaying() {
     cassette.element.classes.remove("cassetteRemove");
     cassette.element.classes.add("cassetteInsert");
 
-    new Future<void>.delayed(Duration(milliseconds: switchTime~/2), () {
+    Audio.play("${audioUrl}button", "ui");
+
+    delay(1250, () { // half way curve switch
         cassette.element.classes.add("cassetteMoveEnd");
     });
 
-    new Future<void>.delayed(Duration(milliseconds: switchTime),(){
+    delay(1500, () { // insertion sound offset
+        Audio.play("${audioUrl}cassettein", "ui");
+    });
+
+    delay(2500,(){ // finished
         mode = PlayerMode.playing;
-        //cassette.element.classes.remove("cassetteMoveEnd");
     });
 }
 
@@ -64,14 +74,19 @@ void switchToTyping() {
     cassette.element.classes.remove("cassetteInsert");
     cassette.element.classes.add("cassetteRemove");
 
-    new Future<void>.delayed(Duration(milliseconds: switchTime~/2), () {
+    Audio.play("${audioUrl}cassetteout", "ui");
+
+    delay(1250, () { // half way curve switch
         cassette.element.classes.remove("cassetteMoveEnd");
     });
 
-    new Future<void>.delayed(Duration(seconds:2),(){
+    delay(2300, () {
+        Audio.play("${audioUrl}button", "ui");
+    });
+
+    delay(2500,(){ // finished
         mode = PlayerMode.typing;
         Keyboard.enable();
-        //cassette.element.classes.remove("cassetteMoveEnd");
     });
 }
 
@@ -110,6 +125,12 @@ Future<void> pressPlay([Event e]) async {
         return;
     }
 
+    cassette.element.classes.add("cassettePlaying");
+
+    playButton.press();
+    stopButton.release(true);
+    ejectButton.release(true);
+
     playing = true;
     systemPrint("wrrr...click!");
     final String file = "$podUrl$caption";
@@ -125,14 +146,12 @@ Future<void> pressPlay([Event e]) async {
     //in git there is a playlist here i can use to understand
     if (playing) {
         await Audio.SYSTEM.load(file);
-        if (!playing) { return; }
+        if (!playing) {
+            return;
+        }
         nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
         systemPrint("Passphrase Accepted!");
     }
-
-    playButton.press();
-    stopButton.release(true);
-    ejectButton.release(true);
 }
 
 Future<void> pressStop([Event e]) async {
@@ -140,11 +159,13 @@ Future<void> pressStop([Event e]) async {
         return;
     }
 
-    stop();
+    cassette.element.classes.remove("cassettePlaying");
 
     stopButton.press();
     playButton.release(true);
     ejectButton.release(true);
+
+    stop();
 }
 
 Future<void> pressEject([Event e]) async {
@@ -153,7 +174,7 @@ Future<void> pressEject([Event e]) async {
     }
 
     pressStop();
-    ejectButton.press(true);
+    ejectButton.press();
 
     switchToTyping();
 }

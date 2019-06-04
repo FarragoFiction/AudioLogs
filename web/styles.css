@@ -347,7 +347,7 @@ html, body {
 }
 
 .cassetteRemove, .cassetteInsert {
-    animation-duration: 1s;
+    animation-duration: 2.5s;
     animation-name: cassetteMove;
     animation-timing-function: ease-in;
     animation-fill-mode: forwards;
@@ -365,27 +365,70 @@ html, body {
     animation-direction: reverse;
 }
 
+.cassettePlaying .spool {
+    animation-timing-function: linear;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+}
+
+.cassettePlaying .left {
+    animation-name: spool-left;
+}
+.cassettePlaying .right {
+    animation-name: spool-right;
+}
+
 @keyframes cassetteMove {
     0% {
         opacity: 1.0;
         top: 100px;
     }
-    30% {
+    32% {
+        top: 100px;
+    }
+    38% {
         opacity: 1.0;
     }
     40% {
         top: 25px;
         opacity: 0.0;
     }
-    60% {
+    65% {
         top: 225px;
         opacity: 0.0;
     }
     70% {
         opacity: 1.0;
     }
+    78% {
+        top: 280px;
+    }
+    92% {
+        top: 280px;
+    }
+    95% {
+        top: 300px;
+    }
     100% {
         opacity: 1.0;
         top: 300px;
+    }
+}
+
+@keyframes spool-left {
+    0% {
+        transform: translate(-50%,-50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%,-50%) rotate(360deg);
+    }
+}
+
+@keyframes spool-right {
+    0% {
+        transform: translate(50%,-50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(50%,-50%) rotate(360deg);
     }
 }

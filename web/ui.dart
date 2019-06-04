@@ -302,7 +302,7 @@ class UiButton {
         this.element.classes.remove(pressedClass);
 
         if (!silent) {
-            Audio.play("${audioUrl}keydown0", "ui");
+            Audio.play("${audioUrl}button", "ui", pitchVar: 0.2);
         }
     }
 
@@ -313,7 +313,7 @@ class UiButton {
         this.element.classes.add(pressedClass);
 
         if (!silent) {
-            Audio.play("${audioUrl}keydown0", "ui");
+            Audio.play("${audioUrl}button", "ui", pitchVar: 0.2);
         }
     }
 }
