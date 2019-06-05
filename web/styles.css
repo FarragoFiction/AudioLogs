@@ -184,7 +184,8 @@ html, body {
 .keyboardOverlayTop {
     width: 650px;
     height: 42px;
-    top: 0;
+
+    top:0;
 
     background-image: url("images/keyboard_overlay_top.png");
     position:absolute;
@@ -199,6 +200,28 @@ html, body {
     background-image: url("images/keyboard_overlay_bottom.png");
     position:absolute;
     z-index:200;
+}
+
+.keyboardUpper {
+    position:absolute;
+    /*border:1px solid red;*/
+    width:650px;
+    height:22px;
+
+    bottom:120px;
+    left: 315px;
+
+    background-image:url("images/keyboard_upper.png");
+}
+
+.keyboardUpperFront {
+    position:absolute;
+    background-image:url("images/keyboard_upper_front.png");
+    z-index:500;
+    left:194px;
+    top:2px;
+    width:262px;
+    height:25px;
 }
 
 .boombox {
@@ -252,6 +275,7 @@ html, body {
     box-sizing:content-box;
     padding-top:8px;
     padding-right:1px;
+    border-radius:2px;
 }
 
 .topbuttonpressed {
@@ -261,6 +285,68 @@ html, body {
     top:0;
     background-color: #44474d;
     color:#BBBFBF;
+}
+
+.bottombutton {
+    position:relative;
+    width:36px;
+    height:28px;
+    background-color:#656972;
+    z-index:100;
+
+    border: 2px solid #36393d;
+    border-top: 0px none;
+    border-bottom: 13px solid #4d5057;
+
+    color:#CCCFCF;
+    font-size:140%;
+    cursor:pointer;
+    top:2px;
+    left:500px;
+    border-radius:2px;
+}
+
+.bottombuttonpressed {
+    border-bottom: 5px solid #4d5057;
+    cursor:default;
+    top:10px;
+}
+
+.bottombutton > div {
+    transform: scaleY(0.75);
+    padding:2px 0 0 6px;
+
+}
+
+.keyboardLight {
+    background-image:url("images/light_off.png");
+
+    position:absolute;
+    left:104px;
+    top: 16px;
+    width:52px;
+    height:22px;
+    z-index:1000;
+}
+
+.keyboardLightOn {
+    background-image:url("images/light_on.png");
+}
+
+.keyboardLightOn::after {
+    content:" ";
+    position:absolute;
+    width:300px;
+    height:300px;
+
+    left:11px;
+    top:10px;
+
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+
+    background-image: radial-gradient(circle closest-side, rgba(180,255,106,0.1) 0%, rgba(180,255,106,0.0) 100%);
+    mix-blend-mode: screen;
 }
 
 .speakerContainer {

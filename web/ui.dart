@@ -322,10 +322,15 @@ Cassette cassette;
 UiButton playButton;
 UiButton stopButton;
 UiButton ejectButton;
+UiButton typewriterButton;
+Element keyboardLight;
 
 Future<void> setupUi() async {
     final Element container = querySelector("#container");
     final Element topButtons = querySelector("#topbuttons");
+    final Element keyboardUpper = querySelector("#keyboardUpper");
+
+    keyboardLight = querySelector("#keyboardLight");
 
     await Keyboard.init();
     querySelector("#keyboard").append(Keyboard.element);
@@ -342,16 +347,19 @@ Future<void> setupUi() async {
     stopButton.element.classes..add("glyphicon")..add("glyphicon-stop");
     ejectButton = new UiButton("topbutton", "topbuttonpressed")..element.title="Eject";
     ejectButton.element.classes..add("glyphicon")..add("glyphicon-eject");
+    typewriterButton = new UiButton("bottombutton", "bottombuttonpressed")..element.title="Transfer";
+    typewriterButton.element.append(new DivElement()..classes.add("glyphicon")..classes.add("glyphicon-ok"));
 
     topButtons.append(playButton.element);
     topButtons.append(stopButton.element);
     topButtons.append(ejectButton.element);
+    keyboardUpper.append(typewriterButton.element);
 
     cassette = new Cassette();
 
     container.append(cassette.element);
 
-    container.append(new ButtonElement()
+    /*container.append(new ButtonElement()
         ..style.position="absolute"
         ..style.left = "330px"
         ..style.top = "350px"
@@ -359,5 +367,8 @@ Future<void> setupUi() async {
         ..onClick.listen((Event e){
             switchToPlaying();
         })
-    );
+    );*/
+    typewriterButton.element.onClick.listen((Event e){
+        switchToPlaying();
+    });
 }

@@ -54,7 +54,8 @@ void switchToPlaying() {
     cassette.element.classes.add("cassetteInsert");
     cassette.element.classes.add("cassetteFront");
 
-    Audio.play("${audioUrl}button", "ui");
+    typewriterButton.press();
+    keyboardLight.classes.remove("keyboardLightOn");
 
     delay(1250, () { // half way curve switch
         cassette.element.classes.remove("cassetteFront");
@@ -92,11 +93,13 @@ void switchToTyping() {
 
     delay(2300, () { // clunk on typewriter insertion
         Audio.play("${audioUrl}button", "ui", basePitch: 1.4);
+        typewriterButton.release(true);
     });
 
     delay(2500,(){ // finished
         mode = PlayerMode.typing;
         Keyboard.enable();
+        keyboardLight.classes.add("keyboardLightOn");
     });
 }
 
