@@ -1,4 +1,5 @@
 import "dart:html";
+import "dart:math" as Math;
 import "dart:web_audio";
 
 import "package:AudioLib/AudioLib.dart";
@@ -45,8 +46,6 @@ abstract class Keyboard {
         window.onBlur.listen(refocus);
         window.onMouseUp.listen(onMouseUp);
 
-        Audio.createChannel("ui", 0.6);
-
         element = makeElement();
     }
 
@@ -74,10 +73,11 @@ abstract class Keyboard {
     }
 
     static void onKeyDown(KeyboardEvent event) {
-        if (!event.ctrlKey && !event.altKey) {
+        final bool valid = keys.containsKey(event.key);
+        if (valid && !event.ctrlKey && !event.altKey) {
             event.preventDefault();
         }
-        if (keys.containsKey(event.key)) {
+        if (valid) {
             keys[event.key].press();
         }
     }
@@ -279,7 +279,7 @@ class Cassette {
 
     void cycleElement() {
         if (this.element.parent == null) { return; }
-        Element e = this.element.parent;
+        final Element e = this.element.parent;
         this.element.remove();
         e.append(this.element);
     }
@@ -318,19 +318,136 @@ class UiButton {
     }
 }
 
+class VolumeKnob {
+    int size;
+    AudioEffect linkedParam;
+
+    Element element;
+    Element knob;
+
+    bool dragging = false;
+
+    static const double deadZone = 35;
+    static const int majorDivisions = 10;
+    static const int minorDivisions = 5;
+
+    static const int steps = majorDivisions * minorDivisions;
+    final double step = (360 - deadZone*2) / steps;
+    
+    double get value => linkedParam.value;
+    set value(double v) {
+        linkedParam.value = v;
+        this.updateElement();
+    }
+
+    static const double _rad2Deg = 360 / (Math.pi * 2);
+
+    VolumeKnob(dynamic audioParamORAudioEffect, int this.size, String title) {
+        linkedParam = Audio.validateParamInput(audioParamORAudioEffect);
+
+        element = new DivElement()..className="volumeKnobContainer";
+
+        for (int i=0; i <= steps; i++) {
+            final bool isMajor = i % minorDivisions == 0;
+
+            final double angle = i * step - 180 + deadZone;
+
+            final Element mark = new DivElement()..className="knobDivision${isMajor ? "Major" : "Minor"}";
+            mark.style.transform = "rotate(${angle.toStringAsFixed(2)}deg)";
+
+            if (isMajor) {
+                final Element markLabel = new DivElement()..className="knobLabel"..text = ((i/steps)*10).round().toString();
+                //markLabel.style.transform = "rotate(${(-angle).toStringAsFixed(2)}deg) translate(-50%,-50%)";
+                mark.append(markLabel);
+            }
+
+            element.append(mark);
+        }
+
+        element.append(new DivElement()..className="knobTitle"..text=title);
+
+        knob = new DivElement()..className="volumeKnob";
+        element.append(knob);
+
+        const double scrollIncrement = 0.02;
+
+        knob.onMouseWheel.listen((WheelEvent event) {
+            event.preventDefault();
+            final double adjusted = (this.value + scrollIncrement * event.deltaY.sign * -1).clamp(0, 1.0);
+            this.value = roundToStep(adjusted);
+        });
+
+        knob.onMouseDown.listen(_mouseDown);
+        window.onMouseUp.listen(_mouseUp);
+        window.onMouseMove.listen(_mouseMove);
+
+        updateElement();
+    }
+
+    void _mouseDown(MouseEvent e) {
+        this.dragging = true;
+    }
+
+    void _mouseUp(MouseEvent e) {
+        _mouseMove(e);
+        this.dragging = false;
+    }
+
+    void _mouseMove(MouseEvent e) {
+        if (this.dragging) {
+            final int kSize = knob.offsetWidth~/2;
+            final Point<num> relativePos = e.page - (knob.documentOffset + new Point<num>(kSize,kSize));
+
+            this.value = valueFromOffset(relativePos).clamp(0, 1);
+        }
+    }
+
+    double roundToStep(double input) {
+        return (input * steps).round() / steps;
+    }
+    
+    void updateElement() {
+        final String angle = angleStyle(angleFromValue(this.value));
+        knob.style.transform = angle;
+    }
+
+    double angleFromOffset(Point<num> offset) {
+        return (-Math.atan2(offset.x, offset.y) * _rad2Deg) % 360;
+    }
+
+    double angleFromValue(double value) {
+        return deadZone + value * (360 - (deadZone * 2));
+    }
+
+    double valueFromAngle(double angle) {
+        return (angle - deadZone) / (360 - (deadZone * 2));
+    }
+
+    double valueFromOffset(Point<num> offset) => valueFromAngle(angleFromOffset(offset));
+
+    static String angleStyle(double angle) {
+        return "rotate(${(angle - 180).toStringAsFixed(2)}deg)";
+    }
+}
+
 Cassette cassette;
 UiButton playButton;
 UiButton stopButton;
 UiButton ejectButton;
 UiButton typewriterButton;
 Element keyboardLight;
+VolumeKnob playbackVolume;
+VolumeKnob uiVolume;
 
 Future<void> setupUi() async {
     final Element container = querySelector("#container");
     final Element topButtons = querySelector("#topbuttons");
     final Element keyboardUpper = querySelector("#keyboardUpper");
+    final Element boombox = querySelector("#boombox");
 
     keyboardLight = querySelector("#keyboardLight");
+
+    Audio.createChannel("ui", 0.6);
 
     await Keyboard.init();
     querySelector("#keyboard").append(Keyboard.element);
@@ -354,6 +471,11 @@ Future<void> setupUi() async {
     topButtons.append(stopButton.element);
     topButtons.append(ejectButton.element);
     keyboardUpper.append(typewriterButton.element);
+
+    playbackVolume = new VolumeKnob(Audio.SYSTEM.channels["Voice"].volumeParam, 128, "VOLUME")..element.classes.add("rightKnob");
+    boombox.append(playbackVolume.element);
+    uiVolume = new VolumeKnob(Audio.SYSTEM.channels["ui"].volumeParam, 128, "TUNING")..element.classes.add("leftKnob");
+    boombox.append(uiVolume.element);
 
     cassette = new Cassette();
 

@@ -565,3 +565,118 @@ html, body {
         transform: translate(50%,-50%) rotate(360deg);
     }
 }
+
+.volumeKnobContainer {
+    width:128px;
+    height:128px;
+
+    position:absolute;
+}
+
+.volumeKnob {
+    top:14px;
+    left:14px;
+    position:relative;
+    width:100px;
+    height:100px;
+    background-color: #656972;/*#4d5057;*/
+    border-radius:50%;
+    cursor:pointer;
+    border: 15px solid #44474d;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.6);
+    z-index:10;
+}
+
+.volumeKnob::before {
+    content:" ";
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #4d5057, 0 0 15px #656972, 0 0 15px #656972, inset 0 0 4px 3px #696D76;
+}
+
+.volumeKnob::after {
+    content:" ";
+    width:2px;
+    height: 22px;
+    left:50%;
+    top: -11px;
+    position:absolute;
+    background-color: #DCDCE4;
+    display:block;
+    transform: translateX(-50%);
+    box-sizing:border-box;
+    box-shadow: 0 0 0 4px #656972;
+}
+
+.leftKnob, .rightKnob {
+    top: 50px;
+}
+
+.leftKnob {
+    left:330px;
+}
+
+.rightKnob {
+    right:330px;
+}
+
+.knobDivisionMajor, .knobDivisionMinor {
+    left:50%;
+    bottom:50%;
+    width: 1px;
+    height: 54px;
+    transform-origin: center bottom;
+    border-top: 4px solid #DCDCE4;
+
+    position:absolute;
+}
+
+.knobDivisionMajor {
+    border-top: 7px solid #DCDCE4;
+}
+
+.knobLabel {
+    position:absolute;
+    color: #DCDCE4;
+    font-size: 8px;
+    width:16px;
+    font-family: Arial, sans-serif;
+    text-align:center;
+    top: -12px;
+    left:0;
+    transform-origin: center middle;
+    /*border:1px solid red;*/
+    pointer-events:none;
+    transform: translate(-50%,-50%);
+    text-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+.knobTitle {
+    font-size:11px;
+    color: #DCDCE4;
+    position:absolute;
+    width:128px;
+    bottom:-5px;
+    left:0;
+    text-align:center;
+    pointer-events:none;
+    text-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+.knobSticker {
+    position:absolute;
+    transform:rotate(6deg);
+    background-color: #F4F2EC;
+    color: #404040;
+    font-family: "Courier", "Courier New", monospace;
+    font-weight:bold;
+    padding:3px 8px 3px 8px;
+    font-size:14px;
+    left:340px;
+    top:173px;
+    z-index:10;
+    box-shadow:0 1px 3px rgba(0,0,0,0.2);
+}

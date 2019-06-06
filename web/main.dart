@@ -199,6 +199,9 @@ Future<void> main() async {
 
     rand.nextInt();
 
+    Audio.createChannel("Voice", 0.5);
+    Audio.createChannel("BG", 0.4);
+
     await setupUi();
     Keyboard.keyCallback = writeLetter;
     Keyboard.backspaceCallback = backspace;
@@ -208,9 +211,6 @@ Future<void> main() async {
     system = new DivElement();
     output.append(system);
 
-    Audio.createChannel("Voice", 0.5);
-    Audio.createChannel("BG", 0.4);
-
     String initPW = "";
     if(Uri.base.queryParameters['passPhrase'] != null) {
         initPW = Uri.base.queryParameters['passPhrase'];
@@ -219,7 +219,7 @@ Future<void> main() async {
     caption = initPW;
 
     updateCaption();
-    output.append(Audio.slider(Audio.SYSTEM.volumeParam));
+    //output.append(Audio.slider(Audio.SYSTEM.volumeParam));
 
     playButton.element.onClick.listen(pressPlay);
     stopButton.element.onClick.listen(pressStop);
