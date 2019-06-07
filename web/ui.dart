@@ -1,9 +1,11 @@
+import "dart:async";
 import "dart:html";
 import "dart:math" as Math;
 import "dart:web_audio";
 
 import "package:AudioLib/AudioLib.dart";
 import "package:CommonLib/Logging.dart";
+import "package:CommonLib/Random.dart";
 import "package:CommonLib/Utility.dart";
 
 import "main.dart";
@@ -29,6 +31,8 @@ abstract class Keyboard {
 
     static Lambda<String> keyCallback;
     static Action backspaceCallback;
+
+    static Random rand = new Random();
 
     static Future<void> init() async {
         final List<Future<AudioBuffer>> toLoad = <Future<AudioBuffer>>[];
@@ -159,7 +163,7 @@ class Key {
         Keyboard.logger.debug("$this pressed");
         this.element.classes.add("pressed");
 
-        Audio.play("${audioUrl}keydown${rand.nextInt(Keyboard.keySounds)}", "ui");
+        Audio.play("${audioUrl}keydown${Keyboard.rand.nextInt(Keyboard.keySounds)}", "ui");
 
         Keyboard.pressKey(this);
     }
@@ -430,6 +434,54 @@ class VolumeKnob {
     }
 }
 
+class Gauge {
+
+    double _value = 0.0;
+
+    Element element;
+    Element dial;
+
+    static const double spread = 60;
+
+    double readingAverage = 0;
+    double readingSpread = 0;
+
+    Timer ticker;
+    Random rand = new Random();
+
+    bool active = false;
+
+    double get value => _value;
+    set value(double v) {
+        _value = v;
+        updateElement();
+    }
+
+    Gauge() {
+        element = new DivElement()..className="gauge";
+        dial = new DivElement()..className="gaugeDial";
+        element.append(dial);
+
+        ticker = new Timer.periodic(Duration(milliseconds: 100), tick);
+    }
+
+    void tick([Timer t]) {
+        if (active) {
+            value = (rand.nextDouble(readingSpread) - readingSpread * 0.5 + readingAverage).clamp(0, 1);
+        } else {
+            value = 0;
+        }
+    }
+
+    void updateElement() {
+        dial.style.transform = "translateX(-50%) rotate(${angleFromValue(value).toStringAsFixed(2)}deg)";
+    }
+
+    double angleFromValue(double value) {
+        return spread * 2 * (value - 0.5);
+    }
+}
+
 Cassette cassette;
 UiButton playButton;
 UiButton stopButton;
@@ -438,6 +490,8 @@ UiButton typewriterButton;
 Element keyboardLight;
 VolumeKnob playbackVolume;
 VolumeKnob uiVolume;
+Gauge ontologicalGauge;
+Gauge narrativeGauge;
 
 Future<void> setupUi() async {
     final Element container = querySelector("#container");
@@ -476,6 +530,11 @@ Future<void> setupUi() async {
     boombox.append(playbackVolume.element);
     uiVolume = new VolumeKnob(Audio.SYSTEM.channels["ui"].volumeParam, 128, "TUNING")..element.classes.add("leftKnob");
     boombox.append(uiVolume.element);
+
+    ontologicalGauge = new Gauge()..element.classes.add("leftGauge")..readingSpread=0.2;
+    boombox.append(ontologicalGauge.element);
+    narrativeGauge = new Gauge()..element.classes.add("rightGauge")..readingSpread=0.3;
+    boombox.append(narrativeGauge.element);
 
     cassette = new Cassette();
 

@@ -680,3 +680,35 @@ html, body {
     z-index:10;
     box-shadow:0 1px 3px rgba(0,0,0,0.2);
 }
+
+.gauge {
+    position:absolute;
+    width:128px;
+    height:128px;
+    border:1px solid black;
+}
+
+.gaugeDial {
+    position:absolute;
+    bottom: 25px;
+    height:60px;
+    width:2px;
+    left:50%;
+    transform: translateX(-50%) rotate(-60deg);
+    background-color:red;
+    transform-origin: center bottom;
+
+    transition: 0.15s transform;
+}
+
+.leftGauge, .rightGauge {
+    top: 210px;
+}
+
+.leftGauge {
+    left:330px;
+}
+
+.rightGauge {
+    right:330px;
+}

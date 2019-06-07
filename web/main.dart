@@ -152,7 +152,9 @@ Future<void> pressPlay([Event e]) async {
     } on LoaderException {
         systemPrint("Error! Unknown Passphrase: $caption");
         if (playing) {
-            await bullshitCorruption(caption);
+            bullshitCorruption(caption);
+            narrativeGauge..readingAverage=0.1..active=true;
+            ontologicalGauge..readingAverage = 0.1..active = true;
         }
         return;
     }
@@ -163,6 +165,8 @@ Future<void> pressPlay([Event e]) async {
             return;
         }
         nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
+        narrativeGauge..readingAverage=0.7..active=true;
+        ontologicalGauge..readingAverage = 0.9..active = true;
         systemPrint("Passphrase Accepted!");
     }
 }
@@ -400,6 +404,8 @@ void stop() {
         wrapper.node.stop();
     }
     nodes.clear();
+    narrativeGauge.active=false;
+    ontologicalGauge.active = false;
 }
 
 //because for some damn reason i can't detect if shit is done
