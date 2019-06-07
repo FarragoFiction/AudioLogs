@@ -11,7 +11,7 @@ import "package:CommonLib/Utility.dart";
 
 import "ui.dart";
 
-Random rand = new Random(13);
+Random globalRand = new Random(13);
 
 //the sources we'll use for wrong passphrases
 //TODO choose which of the absolutebullshit to choose based on the content of the input
@@ -199,9 +199,9 @@ Future<void> pressEject([Event e]) async {
 
 Future<void> main() async {
     new Audio();
-    Audio.SYSTEM.rand = rand;
+    Audio.SYSTEM.rand = globalRand;
 
-    rand.nextInt();
+    globalRand.nextInt();
 
     Audio.createChannel("Voice", 0.5);
     Audio.createChannel("BG", 0.4);
@@ -248,7 +248,7 @@ Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
     await gigglesnort(value);
-    final String music = "$podUrl${rand.pickFrom(soothingMusic)}";
+    final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
     if(!playing) { return; }
     await Audio.SYSTEM.load(music);
@@ -311,12 +311,12 @@ List<String> selectCorruptChannels(String value) {
     if(ret.isNotEmpty) return ret;
     //you picked something just non existant
     //yes this allows repeats
-    ret.add(rand.pickFrom(absoluteBullshit));
-    ret.add(rand.pickFrom(absoluteBullshit));
-    ret.add(rand.pickFrom(absoluteBullshit));
-    final int num = rand.nextIntRange(1,5);
+    ret.add(globalRand.pickFrom(absoluteBullshit));
+    ret.add(globalRand.pickFrom(absoluteBullshit));
+    ret.add(globalRand.pickFrom(absoluteBullshit));
+    final int num = globalRand.nextIntRange(1,5);
     for(int i =0; i<num; i++) {
-        ret.add(rand.pickFrom(absoluteBullshit));
+        ret.add(globalRand.pickFrom(absoluteBullshit));
     }
     legibilityLevelInMS = 20;
 
@@ -325,7 +325,7 @@ List<String> selectCorruptChannels(String value) {
 
 void changePassPhrase(String value) {
     setPassPhraseLink(value);
-    rand.setSeed(convertSentenceToNumber(value));
+    globalRand.setSeed(convertSentenceToNumber(value));
 }
 
 void setPassPhraseLink(String passPhrase) {
@@ -352,9 +352,9 @@ Future<void> fuckAround(StoppedFlagNodeWrapper wrapper, double rate, int directi
 
     rate += 0.05 * direction;
 
-    if(rand.nextDouble() >0.9) {
-        rate = rand.nextDoubleRange(0.1,10.0);
-        if(rand.nextBool()) {
+    if(globalRand.nextDouble() >0.9) {
+        rate = globalRand.nextDoubleRange(0.1,10.0);
+        if(globalRand.nextBool()) {
             direction = -1;
         }else {
             direction = 1;
@@ -362,12 +362,12 @@ Future<void> fuckAround(StoppedFlagNodeWrapper wrapper, double rate, int directi
 
     }
 
-    if(rand.nextDouble() >0.9) {
+    if(globalRand.nextDouble() >0.9) {
         direction = direction * -1;
     }
     int next = legibilityLevelInMS;
     if(legibilityLevelInMS < 200) {
-        next = rand.nextIntRange(200, 1000);
+        next = globalRand.nextIntRange(200, 1000);
     }
     if(!wrapper.isStopped) {
         new Timer(Duration(milliseconds: next), () =>
@@ -386,7 +386,7 @@ Future<void> fuckAroundMusic(StoppedFlagNodeWrapper wrapper, double rate, int di
     rate += 0.001 * direction;
 
 
-    if(rand.nextDouble() >0.7) {
+    if(globalRand.nextDouble() >0.7) {
         direction = direction * -1;
     }
 

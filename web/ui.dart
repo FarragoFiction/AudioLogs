@@ -176,7 +176,7 @@ class Key {
         Keyboard.logger.debug("$this released");
         this.element.classes.remove("pressed");
 
-        Audio.play("${audioUrl}keyup${rand.nextInt(Keyboard.keySounds)}", "ui");
+        Audio.play("${audioUrl}keyup${Keyboard.rand.nextInt(Keyboard.keySounds)}", "ui");
     }
 
     void makeElement() {
