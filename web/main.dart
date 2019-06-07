@@ -255,12 +255,14 @@ Future<void> bullshitCorruption(String value) async {
     if(!playing) { return; }
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
-    print("legibilitiy level is $legibilityLevelInMS ;)");
+    systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
     fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
 }
 
 Future<void> gigglesnort(String value) async {
     final List<String> corruptChannels = selectCorruptChannels(value);
+    systemPrint("legibilitiy rank is ${corruptChannels.length} ;)");
+
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
