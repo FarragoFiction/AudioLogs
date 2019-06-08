@@ -9,14 +9,16 @@ import 'package:CommonLib/Random.dart';
 import "package:LoaderLib/Loader.dart";
 import "package:CommonLib/Utility.dart";
 
+import 'scripts/GlitchSlurper.dart';
+import 'scripts/MetaDataSlurper.dart';
+import 'scripts/SystemPrint.dart';
 import "ui.dart";
 
 Random globalRand = new Random(13);
 
 //the sources we'll use for wrong passphrases
-//TODO choose which of the absolutebullshit to choose based on the content of the input
-List<String> absoluteBullshit = <String>["decay","guarded_mythos","adults","void","voidplayers",'owo',"nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
-
+//List<String> absoluteBullshit = <String>["decay","guarded_mythos","adults","void","voidplayers",'owo',"nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
+List<String> absoluteBullshit;
 //the sources we'll use for wrong passphrases bg music
 List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
 Element system;
@@ -149,9 +151,12 @@ Future<void> pressPlay([Event e]) async {
     final String file = "$podUrl$caption";
     try {
         await Audio.SYSTEM.load(file); //if theres a problem here, it will be caught.
+        MetaDataSlurper.loadMetadata(file);
     } on LoaderException {
         systemPrint("Error! Unknown Passphrase: $caption");
         if (playing) {
+            absoluteBullshit = await GlitchSlurper.loadAbsoluteBullshit();
+            systemPrint("Last Glitch Bullshit Update: ${GlitchSlurper.lastUpdated}");
             bullshitCorruption(caption);
             narrativeGauge..readingAverage=0.1..active=true;
             ontologicalGauge..readingAverage = 0.1..active = true;
@@ -233,15 +238,7 @@ Future<void> main() async {
 }
 
 void systemPrint(String text, [int size = 18]) {
-    const String fontFamiily = "'Courier New', Courier, monospace";
-    const String fontWeight = "bold";
-    const String fontColor = "#000000";
-    final String consortCss = "font-family: $fontFamiily;color:$fontColor;font-size: ${size}px;font-weight: $fontWeight;";
-    fancyPrint("Gigglette Player: $text",consortCss);
-    /*final DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
-    div.text = text;
-    system.text = "";
-    system.append(div);*/
+    SystemPrint.print(text, size);
 }
 
 Future<void> bullshitCorruption(String value) async {
