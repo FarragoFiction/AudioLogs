@@ -151,7 +151,7 @@ Future<void> pressPlay([Event e]) async {
     final String file = "$podUrl$caption";
     try {
         await Audio.SYSTEM.load(file); //if theres a problem here, it will be caught.
-        MetaDataSlurper.loadMetadata(file);
+        MetaDataSlurper.loadMetadata(caption);
     } on LoaderException {
         systemPrint("Error! Unknown Passphrase: $caption");
         if (playing) {

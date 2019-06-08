@@ -34,8 +34,9 @@ abstract class MetaDataSlurper {
     static void print() {
         SystemPrint.print("Speaker: $speaker");
         SystemPrint.print("Keywords: $keywords");
+        SystemPrint.print("Summary: $summary");
         if(gigglesnort != null) {
-            SystemPrint.print("gigglesnort: $speaker");
+            SystemPrint.print("Gigglesnort: $gigglesnort");
         }
 
     }
