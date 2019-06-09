@@ -257,7 +257,7 @@ Future<void> bullshitCorruption(String value) async {
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
     //don't fuck around till we know for certain what all we have.
-    await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
+    //await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
     for(AudioBufferSourceNode node in snorts) {
         await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
     }
@@ -266,6 +266,7 @@ Future<void> bullshitCorruption(String value) async {
 
 }
 
+//Warning, because "play" can take different subtle amounts of seconds this won't be 100% accurate.
 Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
