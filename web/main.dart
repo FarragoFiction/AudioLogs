@@ -244,36 +244,48 @@ void systemPrint(String text, [int size = 18]) {
 Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
-    await gigglesnort(value);
+    print("before bullshit, Random is ${globalRand.spawn().nextInt()}");
+    List<AudioBufferSourceNode> snorts = await gigglesnort(value);
+    print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
+
     final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
     if(!playing) { return; }
     await Audio.SYSTEM.load(music);
     if(!playing) { return; }
-    final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
+    final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
-    fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
+    //don't fuck around till we know for certain what all we have.
+    await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
+    for(AudioBufferSourceNode node in snorts) {
+        await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
+    }
+    print("after music, Random is ${globalRand.spawn().nextInt()}");
+
+
 }
 
-Future<void> gigglesnort(String value) async {
+Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
+    List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
     systemPrint("legibilitiy rank is ${corruptChannels.length} ;)");
 
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
-    if(!playing) { return; }
+    if(!playing) { return []; }
     for(final String channel in corruptChannels) {
         final String file = "$podUrl$channel";
         await Audio.SYSTEM.load(file);
-        if(!playing) { return; }
+        if(!playing) { []; }
         final AudioBufferSourceNode node = await Audio.play(
-            file, "Voice", pitchVar: 13.0)
-            ..playbackRate.value = 0.1;
+            file, "Voice")
+            ..playbackRate.value = 0.9;
         nodes.add(new StoppedFlagNodeWrapper(node));
-        fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
+        mynodes.add(node);
     }
+    return mynodes;
 }
 
 //return all absolute bullshit that matches this.
