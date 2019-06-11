@@ -215,11 +215,6 @@ Future<void> main() async {
     Keyboard.keyCallback = writeLetter;
     Keyboard.backspaceCallback = backspace;
 
-    final Element output = querySelector("#output");
-
-    system = new DivElement();
-    output.append(system);
-
     String initPW = "";
     if(Uri.base.queryParameters['passPhrase'] != null) {
         initPW = Uri.base.queryParameters['passPhrase'];
@@ -235,6 +230,21 @@ Future<void> main() async {
     ejectButton.element.onClick.listen(pressEject);
 
     ejectButton.press(true);
+
+    window.onResize.listen(resize);
+    resize();
+}
+
+void resize([Event e]) {
+    final int height = window.innerHeight;
+    print(height);
+
+    if(height > 750) {
+        document.body.classes.add("scrollfix");
+        window.scrollTo(window.scrollX,0);
+    } else {
+        document.body.classes.remove("scrollfix");
+    }
 }
 
 void systemPrint(String text, [int size = 18]) {
