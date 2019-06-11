@@ -440,8 +440,17 @@ class Gauge {
 
     Element element;
     Element dial;
+    Element overlay;
 
     static const double spread = 60;
+    final int majorDivisions;
+    final int minorDivisions;
+
+    int steps;
+    double step;
+
+    final double lowValue;
+    final double highValue;
 
     double readingAverage = 0;
     double readingSpread = 0;
@@ -457,10 +466,37 @@ class Gauge {
         updateElement();
     }
 
-    Gauge() {
+    Gauge(String upperLabel, String middleLabel, [double this.lowValue = 0.0, double this.highValue = 1.0, int this.majorDivisions = 10, int this.minorDivisions = 5]) {
+        steps = majorDivisions * minorDivisions;
+        step = (spread*2) / steps;
+
         element = new DivElement()..className="gauge";
+
+        for (int i=0; i <= steps; i++) {
+            final bool isMajor = i % minorDivisions == 0;
+
+            final double angle = i * step - spread;
+
+            final Element mark = new DivElement()..className="gaugeDivision${isMajor ? "Major" : "Minor"}";
+            mark.style.transform = "rotate(${angle.toStringAsFixed(2)}deg)";
+
+            if (isMajor) {
+                final Element markLabel = new DivElement()..className="gaugeDivisionLabel"..text = (lowValue + (i/steps) * (highValue - lowValue)).toString();
+                //markLabel.style.transform = "rotate(${(-angle).toStringAsFixed(2)}deg) translate(-50%,-50%)";
+                mark.append(markLabel);
+            }
+
+            element.append(mark);
+        }
+
+        element.append(new DivElement()..className="gaugeLabel"..text = middleLabel);
+
         dial = new DivElement()..className="gaugeDial";
         element.append(dial);
+
+        overlay = new DivElement()..className="gaugeOverlay";
+        overlay.append(new DivElement()..className="gaugeLabel"..text = upperLabel);
+        element.append(overlay);
 
         ticker = new Timer.periodic(Duration(milliseconds: 100), tick);
     }
@@ -531,9 +567,9 @@ Future<void> setupUi() async {
     uiVolume = new VolumeKnob(Audio.SYSTEM.channels["ui"].volumeParam, 128, "TUNING")..element.classes.add("leftKnob");
     boombox.append(uiVolume.element);
 
-    ontologicalGauge = new Gauge()..element.classes.add("leftGauge")..readingSpread=0.2;
+    ontologicalGauge = new Gauge("Ontological Stability", "O = kSn", 0,8, 8)..element.classes.add("leftGauge")..readingSpread=0.2;
     boombox.append(ontologicalGauge.element);
-    narrativeGauge = new Gauge()..element.classes.add("rightGauge")..readingSpread=0.3;
+    narrativeGauge = new Gauge("Narrative Stability", "N = kSn", 0,4, 4, 10)..element.classes.add("rightGauge")..readingSpread=0.3;
     boombox.append(narrativeGauge.element);
 
     cassette = new Cassette();
