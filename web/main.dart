@@ -245,7 +245,8 @@ Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
     print("before bullshit, Random is ${globalRand.spawn().nextInt()}");
-    List<AudioBufferSourceNode> snorts = await gigglesnort(value);
+    final List<AudioBufferSourceNode> snorts = await gigglesnort(value);
+    if (snorts == null) { return; }
     print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
 
     final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
@@ -258,7 +259,7 @@ Future<void> bullshitCorruption(String value) async {
     systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
     //don't fuck around till we know for certain what all we have.
     //await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
-    for(AudioBufferSourceNode node in snorts) {
+    for(final AudioBufferSourceNode node in snorts) {
         await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
     }
     print("after music, Random is ${globalRand.spawn().nextInt()}");
@@ -268,18 +269,18 @@ Future<void> bullshitCorruption(String value) async {
 
 //Warning, because "play" can take different subtle amounts of seconds this won't be 100% accurate.
 Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
-    List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
+    final List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
     systemPrint("legibilitiy rank is ${corruptChannels.length} ;)");
 
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
-    if(!playing) { return []; }
+    if(!playing) { return null; }
     for(final String channel in corruptChannels) {
         final String file = "$podUrl$channel";
         await Audio.SYSTEM.load(file);
-        if(!playing) { []; }
+        if(!playing) { return null; }
         final AudioBufferSourceNode node = await Audio.play(
             file, "Voice")
             ..playbackRate.value = 0.9;

@@ -2,15 +2,59 @@
 @import url(glyphicon.css);
 
 html, body {
-  /*width: 100%;
-  height: 100%;*/
-  margin: 0;
-  padding: 0;
-  font-family: 'Roboto', sans-serif;
+    position:relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-image: url("images/wallpaper.png");
+    background-repeat: repeat;
+    background-position: center top;
+    background-size: auto;
+    min-height:800px;
+}
+
+body::before {
+    content:"";
+    position:absolute;
+    background-image: url("images/paper.png"), url("images/board.png"), url("images/carpet.png");
+    background-repeat: no-repeat, repeat-x, repeat;
+    background-size: auto, 15px, auto;
+    background-position: center 350px, center top, center top;
+    top: 2210px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index:-1000;
+}
+
+body::after {
+    content:"";
+    position:absolute;
+    background-image: url("images/carpet.png");
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("images/table.png");
+    background-repeat: no-repeat;
+    background-position: center 430px;
+    background-size: 3000px;
+    z-index:-1000;
+}
+
+.outer {
+    width:100%;
+    height:900px;
+    overflow:hidden;
 }
 
 .container {
-    margin: 0 auto 0 auto;
+    margin: 30px auto 60px auto;
     width:1280px;
     height: 740px;
     position:relative;
@@ -227,9 +271,16 @@ html, body {
 .boombox {
     position:relative;
     width:1280px;
-    height: 500px;
-    background-color: #878d98;
+    height: 540px;
+    /*background-color: #878d98;*/
     background-image: url("images/boombox.png");
+}
+
+.boomboxInner {
+    position:relative;
+    width:1280px;
+    height: 500px;
+    top:40px;
 }
 
 .door_open, .door_closed {
@@ -256,26 +307,31 @@ html, body {
     top:25px;
     left:390px;
     text-align:center;
+    vertical-align:middle;
+}
+
+.topbutton, .topbuttonbroken {
+display:inline-block;
+    width:41px;
+    height:34px;
+    margin:2px;
+    position:relative;
+    box-sizing:content-box;
+    padding-top:8px;
+    padding-right:1px;
 }
 
 .topbutton {
-    display:inline-block;
-    width:41px;
-    height:34px;
     background-color:#4d5057;
-    margin:2px;
     cursor:pointer;
     border: 2px solid #36393d;
     border-top: 7px solid #656972;
     border-bottom: 1px solid #36393d;
-    top:4px;
-    position:relative;
+    top:2px;
     color:#CCCFCF;
     font-size:160%;
-    box-sizing:content-box;
-    padding-top:8px;
-    padding-right:1px;
     border-radius:2px;
+    vertical-align:middle;
 }
 
 .topbuttonpressed {
@@ -285,6 +341,45 @@ html, body {
     top:0;
     background-color: #44474d;
     color:#BBBFBF;
+}
+
+.topbuttonbroken {
+    border: 2px solid #656a72;
+    vertical-align:middle;
+    background-color: #787d87;
+    border-left: 2px solid #a8b0bc;
+    border-bottom: 4px solid #959ca8;
+    border-top: 0 none transparent;
+    height:31px;
+    top:-2px;
+}
+
+.topbuttonbroken::before {
+    content: " ";
+    display:block;
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:10px;
+    border:1px solid #a8b0bc;
+    border-bottom: 1px solid #656a72;
+    border-left: 1px solid #656a72;
+    background-color: #878d98;
+    box-sizing:border-box;
+}
+
+.topbuttonbroken::after {
+    content: " ";
+    display:block;
+    position:absolute;
+    width:14px;
+    height:14px;
+    background-color:#3e4042;
+    left:12px;
+    top:10px;
+    border:2px solid #a8b0bc;
+    border-top: 2px solid #656a72;
+    border-right: 2px solid #656a72;
 }
 
 .bottombutton {
@@ -404,7 +499,7 @@ html, body {
     width:250px;
     height:160px;
     left: 515px;
-    top: 300px;
+    top: 340px;
 
     transform-origin: center bottom;
 }
@@ -504,7 +599,7 @@ html, body {
 @keyframes cassetteMove {
     0% {
         opacity: 1.0;
-        top: 100px;
+        top: 140px;
         transform: scaleY(1.0);
         filter: none;
     }
@@ -513,7 +608,7 @@ html, body {
         filter: brightness(0.65);
     }
     32% {
-        top: 100px;
+        top: 140px;
         transform: scaleY(0.8);
         filter: brightness(0.65);
     }
@@ -523,28 +618,28 @@ html, body {
         filter: none;
     }
     40% {
-        top: 25px;
+        top: 65px;
         opacity: 0.0;
     }
     65% {
-        top: 225px;
+        top: 265px;
         opacity: 0.0;
     }
     70% {
         opacity: 1.0;
     }
     78% {
-        top: 280px;
+        top: 320px;
     }
     92% {
-        top: 280px;
+        top: 320px;
     }
     95% {
-        top: 300px;
+        top: 340px;
     }
     100% {
         opacity: 1.0;
-        top: 300px;
+        top: 340px;
     }
 }
 
@@ -666,19 +761,28 @@ html, body {
     text-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 
-.knobSticker {
+.sticker {
     position:absolute;
-    transform:rotate(6deg);
     background-color: #F4F2EC;
     color: #404040;
     font-family: "Courier", "Courier New", monospace;
     font-weight:bold;
     padding:3px 8px 3px 8px;
     font-size:14px;
-    left:340px;
-    top:173px;
     z-index:10;
     box-shadow:0 1px 3px rgba(0,0,0,0.2);
+}
+
+.knobSticker {
+    transform:rotate(6deg);
+    left:340px;
+    top:173px;
+}
+
+.buttonSticker {
+    transform:rotate(-0.5deg);
+    left:500px;
+    top:3px;
 }
 
 .gauge {

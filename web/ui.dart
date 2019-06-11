@@ -554,13 +554,26 @@ Future<void> setupUi() async {
     stopButton.element.classes..add("glyphicon")..add("glyphicon-stop");
     ejectButton = new UiButton("topbutton", "topbuttonpressed")..element.title="Eject";
     ejectButton.element.classes..add("glyphicon")..add("glyphicon-eject");
+
     typewriterButton = new UiButton("bottombutton", "bottombuttonpressed")..element.title="Transfer";
     typewriterButton.element.append(new DivElement()..classes.add("glyphicon")..classes.add("glyphicon-ok"));
 
-    topButtons.append(playButton.element);
+    // top button block
+
+    topButtons.append(new DivElement()..className="topbuttonbroken");//..append(new DivElement()..classes.add("glyphicon")..classes.add("glyphicon-backward")));
+
     topButtons.append(stopButton.element);
+    topButtons.append(playButton.element);
+
+
+    topButtons.append(new DivElement()..className="topbuttonbroken");//..append(new DivElement()..classes.add("glyphicon")..classes.add("glyphicon-forward")));
+
+    topButtons.append(new DivElement()..className="topbuttonbroken");//..append(new DivElement()..classes.add("glyphicon")..classes.add("glyphicon-pause")));
     topButtons.append(ejectButton.element);
+
     keyboardUpper.append(typewriterButton.element);
+
+    // knobs
 
     playbackVolume = new VolumeKnob(Audio.SYSTEM.channels["Voice"].volumeParam, 128, "VOLUME")..element.classes.add("rightKnob");
     boombox.append(playbackVolume.element);
