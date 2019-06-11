@@ -9,14 +9,16 @@ import 'package:CommonLib/Random.dart';
 import "package:LoaderLib/Loader.dart";
 import "package:CommonLib/Utility.dart";
 
+import 'scripts/GlitchSlurper.dart';
+import 'scripts/MetaDataSlurper.dart';
+import 'scripts/SystemPrint.dart';
 import "ui.dart";
 
 Random globalRand = new Random(13);
 
 //the sources we'll use for wrong passphrases
-//TODO choose which of the absolutebullshit to choose based on the content of the input
-List<String> absoluteBullshit = <String>["decay","guarded_mythos","adults","void","voidplayers",'owo',"nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
-
+//List<String> absoluteBullshit = <String>["decay","guarded_mythos","adults","void","voidplayers",'owo',"nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
+List<String> absoluteBullshit;
 //the sources we'll use for wrong passphrases bg music
 List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
 Element system;
@@ -149,9 +151,12 @@ Future<void> pressPlay([Event e]) async {
     final String file = "$podUrl$caption";
     try {
         await Audio.SYSTEM.load(file); //if theres a problem here, it will be caught.
+        MetaDataSlurper.loadMetadata(caption);
     } on LoaderException {
         systemPrint("Error! Unknown Passphrase: $caption");
         if (playing) {
+            absoluteBullshit = await GlitchSlurper.loadAbsoluteBullshit();
+            systemPrint("Last Glitch Bullshit Update: ${GlitchSlurper.lastUpdated}");
             bullshitCorruption(caption);
             narrativeGauge..readingAverage=0.1..active=true;
             ontologicalGauge..readingAverage = 0.1..active = true;
@@ -233,50 +238,55 @@ Future<void> main() async {
 }
 
 void systemPrint(String text, [int size = 18]) {
-    const String fontFamiily = "'Courier New', Courier, monospace";
-    const String fontWeight = "bold";
-    const String fontColor = "#000000";
-    final String consortCss = "font-family: $fontFamiily;color:$fontColor;font-size: ${size}px;font-weight: $fontWeight;";
-    fancyPrint("Gigglette Player: $text",consortCss);
-    /*final DivElement div = new DivElement()..style.fontFamily = fontFamiily..style.fontWeight=fontWeight..style.color=fontColor..style.fontSize="${size}px";
-    div.text = text;
-    system.text = "";
-    system.append(div);*/
+    SystemPrint.print(text, size);
 }
 
 Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
-    await gigglesnort(value);
+    print("before bullshit, Random is ${globalRand.spawn().nextInt()}");
+    List<AudioBufferSourceNode> snorts = await gigglesnort(value);
+    print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
+
     final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
     if(!playing) { return; }
     await Audio.SYSTEM.load(music);
     if(!playing) { return; }
-    final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG",pitchVar: 13.0)..playbackRate.value = 0.1;
+    final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
-    fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
+    //don't fuck around till we know for certain what all we have.
+    //await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
+    for(AudioBufferSourceNode node in snorts) {
+        await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
+    }
+    print("after music, Random is ${globalRand.spawn().nextInt()}");
+
+
 }
 
-Future<void> gigglesnort(String value) async {
+//Warning, because "play" can take different subtle amounts of seconds this won't be 100% accurate.
+Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
+    List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
     systemPrint("legibilitiy rank is ${corruptChannels.length} ;)");
 
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
-    if(!playing) { return; }
+    if(!playing) { return []; }
     for(final String channel in corruptChannels) {
         final String file = "$podUrl$channel";
         await Audio.SYSTEM.load(file);
-        if(!playing) { return; }
+        if(!playing) { []; }
         final AudioBufferSourceNode node = await Audio.play(
-            file, "Voice", pitchVar: 13.0)
-            ..playbackRate.value = 0.1;
+            file, "Voice")
+            ..playbackRate.value = 0.9;
         nodes.add(new StoppedFlagNodeWrapper(node));
-        fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
+        mynodes.add(node);
     }
+    return mynodes;
 }
 
 //return all absolute bullshit that matches this.
