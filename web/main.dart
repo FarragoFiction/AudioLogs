@@ -203,15 +203,28 @@ Future<void> pressEject([Event e]) async {
 }
 
 Future<void> main() async {
-    new Audio();
+    print("initial main");
+    try {
+        new Audio();
+    }on Exception { //past jr says: except this never actually triggers when it needs to, i.e. on safari
+        window.alert("I THINK your browser doesn't support this. Thems the breaks. ");
+        final Element whoops = querySelector("container");
+        whoops.text = "You won't be able to get any gigglesnort with WRONG passphrases in this browser...";
+        final AnchorElement a = new AnchorElement(href:podUrl)..text = "But you can hear valid passphrases here.";
+        whoops.append(a);
+    }
+    print("after audio");
+
     Audio.SYSTEM.rand = globalRand;
 
     globalRand.nextInt();
 
     Audio.createChannel("Voice", 0.5);
     Audio.createChannel("BG", 0.4);
+    print("after create channel");
 
     await setupUi();
+    print("set up ui done");
     Keyboard.keyCallback = writeLetter;
     Keyboard.backspaceCallback = backspace;
 
