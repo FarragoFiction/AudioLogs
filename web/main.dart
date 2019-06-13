@@ -281,7 +281,7 @@ Future<void> bullshitCorruption(String value) async {
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
     //don't fuck around till we know for certain what all we have.
-    await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
+    await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.7, 1);
     for(final AudioBufferSourceNode node in snorts) {
         await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
     }
