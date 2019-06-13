@@ -580,9 +580,9 @@ Future<void> setupUi() async {
     uiVolume = new VolumeKnob(Audio.SYSTEM.channels["ui"].volumeParam, 128, "TUNING")..element.classes.add("leftKnob");
     boombox.append(uiVolume.element);
 
-    ontologicalGauge = new Gauge("Ontological Stability", "O = kSn", 0,8, 8)..element.classes.add("leftGauge")..readingSpread=0.2;
+    ontologicalGauge = new Gauge("Ontological Stability", "O = kSn", 0,8, 8)..element.classes.add("leftGauge")..readingSpread=0.035;
     boombox.append(ontologicalGauge.element);
-    narrativeGauge = new Gauge("Narrative Stability", "N = kSn", 0,4, 4, 10)..element.classes.add("rightGauge")..readingSpread=0.3;
+    narrativeGauge = new Gauge("Narrative Stability", "N = kSn", 0,4, 4, 10)..element.classes.add("rightGauge")..readingSpread=0.035;
     boombox.append(narrativeGauge.element);
 
     cassette = new Cassette();
