@@ -158,8 +158,9 @@ Future<void> pressPlay([Event e]) async {
             absoluteBullshit = await GlitchSlurper.loadAbsoluteBullshit();
             systemPrint("Last Glitch Bullshit Update: ${GlitchSlurper.lastUpdated}");
             bullshitCorruption(caption);
-            narrativeGauge..readingAverage=0.1..active=true;
-            ontologicalGauge..readingAverage = 0.1..active = true;
+            //these will get set someonewhere in bullshit corruption.
+            //narrativeGauge..readingAverage=0.1..active=true;
+            //ontologicalGauge..readingAverage = 0.1..active = true;
         }
         return;
     }
