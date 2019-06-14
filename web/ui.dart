@@ -575,7 +575,7 @@ Future<void> setupUi() async {
 
     // knobs
 
-    playbackVolume = new VolumeKnob(Audio.SYSTEM.channels["Voice"].volumeParam, 128, "VOLUME")..element.classes.add("rightKnob");
+    playbackVolume = new VolumeKnob(sharedVolume.gain, 128, "VOLUME")..element.classes.add("rightKnob");
     boombox.append(playbackVolume.element);
     uiVolume = new VolumeKnob(Audio.SYSTEM.channels["ui"].volumeParam, 128, "TUNING")..element.classes.add("leftKnob");
     boombox.append(uiVolume.element);

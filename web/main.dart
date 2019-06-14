@@ -203,6 +203,8 @@ Future<void> pressEject([Event e]) async {
     switchToTyping();
 }
 
+GainNode sharedVolume;
+
 Future<void> main() async {
     try {
         new Audio();
@@ -218,8 +220,20 @@ Future<void> main() async {
 
     globalRand.nextInt();
 
-    Audio.createChannel("Voice", 0.5);
-    Audio.createChannel("BG", 0.4);
+    // get ready for some dirty audio hax rewiring yoooo -PL
+    final AudioChannel channelVoice = Audio.createChannel("Voice", 1.0); // 0.5
+    final AudioChannel channelBG =  Audio.createChannel("BG", 0.8); // 0.4
+
+    channelVoice.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
+    channelBG.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
+
+    sharedVolume = new GainNode(Audio.SYSTEM.ctx)..gain.value = 0.5;
+
+    channelVoice.volumeNode.connectNode(sharedVolume);
+    channelBG.volumeNode.connectNode(sharedVolume);
+
+    sharedVolume.connectNode(Audio.SYSTEM.volumeNode);
+    // end hax!
 
     await setupUi();
     Keyboard.keyCallback = writeLetter;
@@ -265,8 +279,11 @@ Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
     print("before bullshit, Random is ${globalRand.spawn().nextInt()}");
+
+    systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
+    narrativeGauge..readingAverage=(legibilityLevelInMS/3000).clamp(0.025,0.975)..active=true;
+
     final List<AudioBufferSourceNode> snorts = await gigglesnort(value);
-    if (snorts == null) { return; }
     print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
 
     final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
@@ -276,8 +293,7 @@ Future<void> bullshitCorruption(String value) async {
     if(!playing) { return; }
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
-    systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
-    narrativeGauge..readingAverage=(legibilityLevelInMS/3000)..active=true;
+
     //don't fuck around till we know for certain what all we have.
     await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.7, 1);
     for(final AudioBufferSourceNode node in snorts) {
@@ -288,22 +304,33 @@ Future<void> bullshitCorruption(String value) async {
 
 }
 
+const List<AudioBufferSourceNode> noSnorts = <AudioBufferSourceNode>[];
+
 //Warning, because "play" can take different subtle amounts of seconds this won't be 100% accurate.
 Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     final List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
+
+    // adjust channel volume for bullshit count
+    final AudioChannel channel = Audio.SYSTEM.channels["BG"];
+    if (corruptChannels.isEmpty) {
+        channel.volume = 1.0;
+    } else {
+        channel.volume = 1.0 / Math.pow(corruptChannels.length, 0.3);
+    }
+
     systemPrint("Ontological Realness Value is ${corruptChannels.length} ;)"); //if more than one file is mixed up its not all that real
-    ontologicalGauge..readingAverage = (1 - ((corruptChannels.length-1)/4))..active = true;
+    ontologicalGauge..readingAverage = (1 - ((corruptChannels.length-1)/4)).clamp(0.025, 0.975)..active = true;
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
-    if(!playing) { return null; }
+    if(!playing) { return noSnorts; }
     for(final String channel in corruptChannels) {
         final String file = "$podUrl$channel";
         await Audio.SYSTEM.load(file);
-        if(!playing) { return null; }
+        if(!playing) { return noSnorts; }
         final AudioBufferSourceNode node = await Audio.play(
-            file, "Voice")
+            file, "BG")
             ..playbackRate.value = 0.9;
         nodes.add(new StoppedFlagNodeWrapper(node));
         mynodes.add(node);
