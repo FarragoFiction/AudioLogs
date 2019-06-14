@@ -48,12 +48,12 @@ abstract class MetaDataSlurper {
     }
 
     static void printFoundTapes() {
-        if(window.localStorage == null) {
+        if(window.localStorage != null) {
             final String existing = window.localStorage[key];
             final List<String> parts = existing.split(",");
             SystemPrint.print("Found tapes is ${parts.length} long. $existing");
         }else {
-            print("saving isn't possible....you don't have local storage");
+            print("Can't load tape deck: you don't have local storage");
         }
 
     }
