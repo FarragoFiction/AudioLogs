@@ -123,7 +123,7 @@ void backspace() {
 }
 
 void updateCaption() {
-    print("caption: $caption");
+    //print("caption: $caption");
     String text = caption;
     if (caption.length > maxLabelLength) {
         text = "${text.substring(0, maxLabelLength-1)}…";
@@ -171,7 +171,7 @@ Future<void> pressPlay([Event e]) async {
             return;
         }
         nodes.add(new StoppedFlagNodeWrapper(await Audio.play(file, "Voice")));
-        narrativeGauge..readingAverage=0.7..active=true;
+        narrativeGauge..readingAverage=0.9..active=true;
         ontologicalGauge..readingAverage = 0.9..active = true;
         systemPrint("Passphrase Accepted!");
     }
@@ -204,7 +204,6 @@ Future<void> pressEject([Event e]) async {
 }
 
 Future<void> main() async {
-    print("initial main");
     try {
         new Audio();
     }on Exception { //past jr says: except this never actually triggers when it needs to, i.e. on safari
@@ -214,7 +213,6 @@ Future<void> main() async {
         final AnchorElement a = new AnchorElement(href:podUrl)..text = "But you can hear valid passphrases here.";
         whoops.append(a);
     }
-    print("after audio");
 
     Audio.SYSTEM.rand = globalRand;
 
@@ -222,10 +220,8 @@ Future<void> main() async {
 
     Audio.createChannel("Voice", 0.5);
     Audio.createChannel("BG", 0.4);
-    print("after create channel");
 
     await setupUi();
-    print("set up ui done");
     Keyboard.keyCallback = writeLetter;
     Keyboard.backspaceCallback = backspace;
 
@@ -251,7 +247,7 @@ Future<void> main() async {
 
 void resize([Event e]) {
     final int height = window.innerHeight;
-    print(height);
+    //print(height);
 
     if(height > 750) {
         document.body.classes.add("scrollfix");
@@ -281,7 +277,7 @@ Future<void> bullshitCorruption(String value) async {
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
     systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
-    narrativeGauge..readingAverage=(legibilityLevelInMS/1000)..active=true;
+    narrativeGauge..readingAverage=(legibilityLevelInMS/3000)..active=true;
     //don't fuck around till we know for certain what all we have.
     await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.7, 1);
     for(final AudioBufferSourceNode node in snorts) {

@@ -36,7 +36,8 @@ abstract class MetaDataSlurper {
         SystemPrint.print("Keywords: $keywords");
         SystemPrint.print("Summary: $summary");
         if(gigglesnort != null) {
-            SystemPrint.print("Gigglesnort: $gigglesnort");
+            SystemPrint.print("There is gigglesnort here. But you can't access it yet.");
+            //SystemPrint.print("Gigglesnort: $gigglesnort");
         }
 
     }

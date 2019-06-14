@@ -11,7 +11,7 @@ import "package:CommonLib/Utility.dart";
 import "main.dart";
 
 abstract class Keyboard {
-    static final Logger logger = new Logger("Keyboard", true);
+    static final  logger = new Logger("Keyboard", true);
     static final List<List<Key>> _keyData = <List<Key>>[
         <Key>[Key("1","!"), Key("2","@"), Key("3","#"), Key("4","\$"), Key("5","%"), Key("6","^"), Key("7","&"), Key("8","*"), Key("9","("), Key("0",")"), Key("Backspace","","←")],
         <Key>[Key("q","Q","Q"), Key("w","W","W"), Key("e","E","E"), Key("r","R","R"), Key("t","T","T"), Key("y","Y","Y"), Key("u","U","U"), Key("i","I","I"), Key("o","O","O"), Key("p","P","P")],
@@ -42,7 +42,7 @@ abstract class Keyboard {
 
         // ignore: unnecessary_statements
         _keyData; // this is actually essential, since it forces the lazy init on _keyData to happen, which populates keys
-        logger.debug(keys);
+        //logger.debug(keys);
 
         window.onKeyDown.listen(onKeyDown);
         window.onKeyUp.listen(onKeyUp);
@@ -64,12 +64,12 @@ abstract class Keyboard {
         }
 
         if (key == backspace) {
-            logger.debug("Backspace!");
+            //logger.debug("Backspace!");
             if (backspaceCallback != null) {
                 backspaceCallback();
             }
         } else {
-            logger.debug("Typed $glyph");
+            //logger.debug("Typed $glyph");
             if (keyCallback != null) {
                 keyCallback(glyph);
             }
@@ -160,7 +160,7 @@ class Key {
         if (click) {
             wasClicked = true;
         }
-        Keyboard.logger.debug("$this pressed");
+        //Keyboard.logger.debug("$this pressed");
         this.element.classes.add("pressed");
 
         Audio.play("${audioUrl}keydown${Keyboard.rand.nextInt(Keyboard.keySounds)}", "ui");
@@ -173,7 +173,7 @@ class Key {
         if (refocus && toggleOnClick && wasClicked) { return; }
         pressed = false;
         wasClicked = false;
-        Keyboard.logger.debug("$this released");
+        //Keyboard.logger.debug("$this released");
         this.element.classes.remove("pressed");
 
         Audio.play("${audioUrl}keyup${Keyboard.rand.nextInt(Keyboard.keySounds)}", "ui");
