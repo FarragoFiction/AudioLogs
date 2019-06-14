@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:CommonLib/Utility.dart';
 import 'package:LoaderLib/Loader.dart';
@@ -10,12 +11,16 @@ abstract class MetaDataSlurper {
     static String speaker;
     static String keywords;
     static String summary;
+    static const String key = "AUDIOLOGSCASETTELIBRARY";
 
-    static Future<List<String>> loadMetadata(String passphrase) async {
+
+    static Future<void> loadMetadata(String passphrase) async {
+        storeTape(passphrase);
+        printFoundTapes();
         try {
-            dynamic jsonRet = await Loader.getResource(
+            final dynamic jsonRet = await Loader.getResource(
                 "http://farragnarok.com/PodCasts/${passphrase}.json");
-            JsonHandler json = new JsonHandler(jsonRet);
+            final JsonHandler json = new JsonHandler(jsonRet);
             speaker = json.getValue("speaker");
             keywords = json.getValue("keywords");
             summary = json.getValue("summary");
@@ -25,13 +30,13 @@ abstract class MetaDataSlurper {
             }else {
                 gigglesnort = null;
             }
-            print();
+            printMe();
         } on LoaderException {
             SystemPrint.print("Metadata not found. JR must not have gotten to this one yet?");
         }
     }
 
-    static void print() {
+    static void printMe() {
         SystemPrint.print("Speaker: $speaker");
         SystemPrint.print("Keywords: $keywords");
         SystemPrint.print("Summary: $summary");
@@ -40,5 +45,35 @@ abstract class MetaDataSlurper {
             //SystemPrint.print("Gigglesnort: $gigglesnort");
         }
 
+    }
+
+    static void printFoundTapes() {
+        if(window.localStorage == null) {
+            final String existing = window.localStorage[key];
+            final List<String> parts = existing.split(",");
+            SystemPrint.print("Found tapes is ${parts.length} long. $existing");
+        }else {
+            print("saving isn't possible....you don't have local storage");
+        }
+
+    }
+
+    //if you haven't already heard this tape, add it.
+    static void storeTape(String tapeName) {
+        if(window.localStorage == null) {
+            print("saving isn't possible....you don't have local storage");
+            return;
+        }
+        try {
+            if (window.localStorage.containsKey(key)) {
+                final String existing = window.localStorage[key];
+                final List<String> parts = existing.split(",");
+                if (!parts.contains(tapeName)) window.localStorage[key] = "$existing,$tapeName";
+            } else {
+                window.localStorage[key] = tapeName;
+            }
+        }on Exception {
+            print("Saving isn't possible....you don't have local storage");
+        }
     }
 }
