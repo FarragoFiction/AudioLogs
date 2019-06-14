@@ -526,8 +526,8 @@ UiButton typewriterButton;
 Element keyboardLight;
 VolumeKnob playbackVolume;
 VolumeKnob uiVolume;
-Gauge ontologicalGauge;
-Gauge narrativeGauge;
+Gauge ontologicalGauge; //realness quotient
+Gauge narrativeGauge; //relevance quotient
 
 Future<void> setupUi() async {
     final Element container = querySelector("#container");

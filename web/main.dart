@@ -279,7 +279,8 @@ Future<void> bullshitCorruption(String value) async {
     if(!playing) { return; }
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
-    systemPrint("legibilitiy level is $legibilityLevelInMS ;)");
+    systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
+    narrativeGauge..readingAverage=(legibilityLevelInMS/1000)..active=true;
     //don't fuck around till we know for certain what all we have.
     await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.7, 1);
     for(final AudioBufferSourceNode node in snorts) {
@@ -294,8 +295,8 @@ Future<void> bullshitCorruption(String value) async {
 Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     final List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
-    systemPrint("legibilitiy rank is ${corruptChannels.length} ;)");
-
+    systemPrint("Ontological Realness Value is ${corruptChannels.length} ;)"); //if more than one file is mixed up its not all that real
+    ontologicalGauge..readingAverage = (1 - ((corruptChannels.length-1)/4))..active = true;
     //print("REMOVE THIS JR, but choose $corruptChannels");
     //each channel individually fucks up
     //physically impossible to both layer noises AND have a tape in/tape out sound
