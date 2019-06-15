@@ -225,12 +225,13 @@ Future<void> main() async {
     final AudioChannel channelBG =  Audio.createChannel("BG", 0.8); // 0.4
 
     channelVoice.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
-    channelBG.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
+    //JR note, pl i unhooked this for now just so gigglesnort doesn't get drowned out.
+    //channelBG.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
 
     sharedVolume = new GainNode(Audio.SYSTEM.ctx)..gain.value = 0.5;
 
     channelVoice.volumeNode.connectNode(sharedVolume);
-    channelBG.volumeNode.connectNode(sharedVolume);
+    //channelBG.volumeNode.connectNode(sharedVolume);
 
     sharedVolume.connectNode(Audio.SYSTEM.volumeNode);
     // end hax!
@@ -291,6 +292,7 @@ Future<void> bullshitCorruption(String value) async {
     await Audio.SYSTEM.load(music);
     if(!playing) { return; }
     final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
+
     nodes.add(new StoppedFlagNodeWrapper(nodeBG));
 
     //don't fuck around till we know for certain what all we have.
@@ -316,7 +318,8 @@ Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     if (corruptChannels.isEmpty) {
         channel.volume = 1.0;
     } else {
-        channel.volume = 1.0 / Math.pow(corruptChannels.length, 0.3);
+        //channel.volume = 1.0 / Math.pow(corruptChannels.length, 0.3);
+        channel.volume = 0.03;
     }
 
     systemPrint("Ontological Realness Value is ${corruptChannels.length} ;)"); //if more than one file is mixed up its not all that real
