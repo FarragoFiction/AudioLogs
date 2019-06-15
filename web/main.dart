@@ -278,13 +278,12 @@ void systemPrint(String text, [int size = 18]) {
 Future<void> bullshitCorruption(String value) async {
     //AudioBufferSourceNode node = await Audio.play(
     //    tapeIn, "Voice");
-    print("before bullshit, Random is ${globalRand.spawn().nextInt()}");
+    //print("before bullshit, Random is ${globalRand.spawn().nextInt()}");
 
-    systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
-    narrativeGauge..readingAverage=(legibilityLevelInMS/3000).clamp(0.025,0.975)..active=true;
+
 
     final List<AudioBufferSourceNode> snorts = await gigglesnort(value);
-    print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
+    //print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
 
     final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
@@ -299,7 +298,7 @@ Future<void> bullshitCorruption(String value) async {
     for(final AudioBufferSourceNode node in snorts) {
         await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
     }
-    print("after music, Random is ${globalRand.spawn().nextInt()}");
+    //print("after music, Random is ${globalRand.spawn().nextInt()}");
 
 
 }
@@ -310,7 +309,8 @@ const List<AudioBufferSourceNode> noSnorts = <AudioBufferSourceNode>[];
 Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     final List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
-
+    systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
+    narrativeGauge..readingAverage=(legibilityLevelInMS/3000).clamp(0.025,0.975)..active=true;
     // adjust channel volume for bullshit count
     final AudioChannel channel = Audio.SYSTEM.channels["BG"];
     if (corruptChannels.isEmpty) {
@@ -348,10 +348,12 @@ List<String> selectCorruptChannels(String value) {
             ret.add(bullshit);
         }
     }
+    //3000 is max
     //the more letters you manage to match, the more legible it is.
-    legibilityLevelInMS = 200 * value.length;
+    legibilityLevelInMS = (3000 * value.length/ret.first.length).ceil(); //how close were you to the full thing
 
     if(ret.isNotEmpty) return ret;
+    print("didnt' find a ret yet, legibilityLevelInMS is $legibilityLevelInMS ");
 
     for(final String bullshit in absoluteBullshit) {
         if(bullshit.toLowerCase().contains(value.toLowerCase())){
@@ -361,6 +363,8 @@ List<String> selectCorruptChannels(String value) {
     legibilityLevelInMS = 100 * value.length;
 
     if(ret.isNotEmpty) return ret;
+    print("didnt' find a ret yet, legibilityLevelInMS is $legibilityLevelInMS ");
+
 
     for (final String bullshit in absoluteBullshit) {
         if(bullshit.toLowerCase().startsWith(value.toLowerCase().substring(0,1))){
@@ -370,6 +374,8 @@ List<String> selectCorruptChannels(String value) {
     legibilityLevelInMS = 200;
 
     if(ret.isNotEmpty) return ret;
+    print("didnt' find a ret yet, legibilityLevelInMS is $legibilityLevelInMS ");
+
     //you picked something just non existant
     //yes this allows repeats
     ret.add(globalRand.pickFrom(absoluteBullshit));
@@ -380,6 +386,8 @@ List<String> selectCorruptChannels(String value) {
         ret.add(globalRand.pickFrom(absoluteBullshit));
     }
     legibilityLevelInMS = 20;
+    print("didnt' find a ret yet, legibilityLevelInMS is $legibilityLevelInMS ");
+
 
     return ret;
 }
