@@ -2,5 +2,5 @@ import 'dart:html';
 
 void main()
 {
-    window.alert("Hello World");
+    window.alert("Future JR: be sure to hack images image caches. You can find them by id.");
 }
