@@ -1,8 +1,13 @@
 import 'dart:html';
 
+import 'package:LoaderLib/Loader.dart';
+
+import 'scripts/SystemPrint.dart';
+
 String caption;
 const String podUrl = "http://farragnarok.com/PodCasts/";
 
+//sorry wastes, these passwords are going to be much, much harder than the pod casts, especially since we have to slowly wire them up :) :) :)
 void main()
 {
     String initPW = "";
@@ -12,11 +17,14 @@ void main()
 
     caption = initPW;
     hack(caption);
-    print("Future JR: be sure to hack images image caches. You can find them by id.");
-    //todo: do NOT actually wire this into anything just yet, just start out with testing things. woudln't do to spoil the whole thing for the wastes
 }
 
-void hack(String hack) {
-
-
+Future<void> hack(String file) async{
+    try {
+        final ImageElement image = await Loader.getResource("$podUrl$file.png");
+        final ImageElement currentImage = querySelector("#srcImg0");
+        currentImage.src = image.src; //sync them.
+    }on Exception {
+        SystemPrint.print("Invalid Passphrase!");
+    }
 }
