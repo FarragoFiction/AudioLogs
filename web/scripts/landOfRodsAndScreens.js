@@ -302,6 +302,9 @@ function loadImage(img,i){
 		console.log("Error loading image: " + this.src);
   }
   imageObj.src = img;
+  imageObj.id = "srcImg"+ i;
+  	$("#loading_image_staging").append(imageObj);
+
 }
 
 function start(){

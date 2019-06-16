@@ -1493,7 +1493,6 @@ interests = interests.concat(justice_interests);
 var prefixes = ["8=D",">->","//", "tumut",")","><>","(", "$", "?", "=begin", "=end"]
 prefixes = prefixes.concat(["<3","<3<","<>","c3<","{","}","[","]","'",".",",","~","!","~","^","&","#","@","%","*"]);
 
-debug("TODO: interest quirks, is it worth it?")
 var music_quirks = [];
 var culture_quirks = [];
 var writing_quirks = [];
