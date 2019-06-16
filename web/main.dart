@@ -311,7 +311,7 @@ const List<AudioBufferSourceNode> noSnorts = <AudioBufferSourceNode>[];
 Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     final List<AudioBufferSourceNode> mynodes = <AudioBufferSourceNode>[];
     final List<String> corruptChannels = selectCorruptChannels(value);
-    systemPrint("Narrative Relevance Value is $legibilityLevelInMS ;)");
+    systemPrint("Narrative Relevance Value is $legibilityLevelInMS/3000 ;)");
     narrativeGauge..readingAverage=(legibilityLevelInMS/3000).clamp(0.025,0.975)..active=true;
     // adjust channel volume for bullshit count
     final AudioChannel channel = Audio.SYSTEM.channels["BG"];
