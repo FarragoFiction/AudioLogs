@@ -352,10 +352,13 @@ List<String> selectCorruptChannels(String value) {
         }
     }
     //3000 is max
-    //the more letters you manage to match, the more legible it is.
-    legibilityLevelInMS = (3000 * value.length/ret.first.length).ceil(); //how close were you to the full thing
 
-    if(ret.isNotEmpty) return ret;
+
+    if(ret.isNotEmpty) {
+        //the more letters you manage to match, the more legible it is.
+        legibilityLevelInMS = (3000 * value.length/ret.first.length).ceil(); //how close were you to the full thing
+        return ret;
+    }
     print("didnt' find a ret yet, legibilityLevelInMS is $legibilityLevelInMS ");
 
     for(final String bullshit in absoluteBullshit) {
