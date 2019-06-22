@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 
 import 'package:LoaderLib/Loader.dart';
@@ -19,11 +20,21 @@ void main()
     hack(caption);
 }
 
-Future<void> hack(String file) async{
+Future<void> hack(String file, [int time = 0]) async{
+    print("hacking $file for the $time time");
     try {
         final ImageElement image = await Loader.getResource("$podUrl$file.png");
+        print("i found file $image");
         final ImageElement currentImage = querySelector("#srcImg0");
-        currentImage.src = image.src; //sync them.
+        print("current image is $currentImage");
+        if(currentImage != null) {
+            currentImage.src = image.src; //sync them.
+        }else {
+            print("is there some sort of race condition? i'll try again in a second");
+            currentImage.onLoad.listen((Event e) {
+                hack(file, time +1);
+            });
+        }
     }on Exception {
         SystemPrint.print("Invalid Passphrase!");
     }

@@ -20,7 +20,7 @@ Random globalRand = new Random(13);
 //List<String> absoluteBullshit = <String>["decay","guarded_mythos","adults","void","voidplayers",'owo',"nope1","nope2","nope3","lohae","lilscumbag","ghoa","wolfcop","smokey","echidnamilk","charms4","charms3","charms2","charms1","warning","weird","conjecture", "Verthfolnir_Podcast","echidnas","dqon"];
 List<String> absoluteBullshit;
 //the sources we'll use for wrong passphrases bg music
-List<String> soothingMusic = <String>["Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
+List<String> soothingMusic = <String>["Please_Hold_V2","Vethrfolnir","Splinters_of_Royalty","Shooting_Gallery","Ares_Scordatura","Vargrant","Campfire_In_the_Void", "Flow_on_2","Noirsong","Saphire_Spires"];
 Element system;
 //smaller numbers mean more changes means less understandable at once
 int legibilityLevelInMS = 20;
@@ -222,7 +222,7 @@ Future<void> main() async {
 
     // get ready for some dirty audio hax rewiring yoooo -PL
     final AudioChannel channelVoice = Audio.createChannel("Voice", 1.0); // 0.5
-    final AudioChannel channelBG =  Audio.createChannel("BG", 0.8); // 0.4
+    final AudioChannel channelBG =  Audio.createChannel("BG", 0.1); // 0.4
 
     channelVoice.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
     //JR note, pl i unhooked this for now just so gigglesnort doesn't get drowned out.
@@ -286,19 +286,24 @@ Future<void> bullshitCorruption(String value) async {
     final List<AudioBufferSourceNode> snorts = await gigglesnort(value);
     //print("after gigglesnort, Random is ${globalRand.spawn().nextInt()}");
 
+    //TODO turn the music back on after pl fixes shit
     final String music = "$podUrl${globalRand.pickFrom(soothingMusic)}";
     print("music chosen is $music");
     if(!playing) { return; }
     await Audio.SYSTEM.load(music);
     if(!playing) { return; }
-    final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.9;
+    //final AudioBufferSourceNode nodeBG = await Audio.play(music, "BG")..playbackRate.value = 0.2;
+    final AudioChannel channelMusic = Audio.SYSTEM.channels["BG"];
+    final AudioChannel channelVoice = Audio.SYSTEM.channels["Voice"];
+    channelMusic.volume = 1.0;
+    channelVoice.volume = 0.0;
 
-    nodes.add(new StoppedFlagNodeWrapper(nodeBG));
+   // nodes.add(new StoppedFlagNodeWrapper(nodeBG));
 
     //don't fuck around till we know for certain what all we have.
-    await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.7, 1);
+    //await fuckAroundMusic(new StoppedFlagNodeWrapper(nodeBG), 0.2, 1);
     for(final AudioBufferSourceNode node in snorts) {
-        await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/1000, 1);
+        await fuckAround(new StoppedFlagNodeWrapper(node), legibilityLevelInMS/3000, 1);
     }
     //print("after music, Random is ${globalRand.spawn().nextInt()}");
 
@@ -314,13 +319,8 @@ Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
     systemPrint("Narrative Relevance Value is $legibilityLevelInMS/3000 ;)");
     narrativeGauge..readingAverage=(legibilityLevelInMS/3000).clamp(0.025,0.975)..active=true;
     // adjust channel volume for bullshit count
-    final AudioChannel channel = Audio.SYSTEM.channels["BG"];
-    if (corruptChannels.isEmpty) {
-        channel.volume = 1.0;
-    } else {
-        //channel.volume = 1.0 / Math.pow(corruptChannels.length, 0.3);
-        channel.volume = 0.03;
-    }
+
+
 
     systemPrint("Ontological Realness Value is ${corruptChannels.length} ;)"); //if more than one file is mixed up its not all that real
     ontologicalGauge..readingAverage = (1 - ((corruptChannels.length-1)/4)).clamp(0.025, 0.975)..active = true;
@@ -387,7 +387,7 @@ List<String> selectCorruptChannels(String value) {
     ret.add(globalRand.pickFrom(absoluteBullshit));
     ret.add(globalRand.pickFrom(absoluteBullshit));
     ret.add(globalRand.pickFrom(absoluteBullshit));
-    final int num = globalRand.nextIntRange(1,5);
+    final int num = globalRand.nextIntRange(2,5); //dont give false positives of a one value
     for(int i =0; i<num; i++) {
         ret.add(globalRand.pickFrom(absoluteBullshit));
     }
@@ -417,7 +417,7 @@ int convertSentenceToNumber(String sentence) {
 
 Future<void> fuckAround(StoppedFlagNodeWrapper wrapper, double rate, int direction) async {
     wrapper.node.playbackRate.value = rate;
-    if(rate >1000/legibilityLevelInMS || rate > 1.3) {
+    if(rate >4000/legibilityLevelInMS || rate > 1.3) {
         rate = 0.1;
         direction = 1;
     }else if(rate < 0.1) {
