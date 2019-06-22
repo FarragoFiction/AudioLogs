@@ -52,10 +52,16 @@ abstract class MetaDataSlurper {
             final String existing = window.localStorage[key];
             final List<String> parts = existing.split(",");
             SystemPrint.print("Found tapes is ${parts.length} long. $existing");
+            compareToAll(parts.length);
         }else {
             print("Can't load tape deck: you don't have local storage");
         }
 
+    }
+
+    static void compareToAll(int found) async{
+        final String total = await  HttpRequest.getString("http://www.farragofiction.com:85/ogg");
+        SystemPrint.print("$found/$total found. That's ${found/int.parse(total)}%.");
     }
 
     //if you haven't already heard this tape, add it.
