@@ -11,6 +11,7 @@ abstract class MetaDataSlurper {
     static String speaker;
     static String keywords;
     static String summary;
+    static String transcript = "";
     static const String key = "AUDIOLOGSCASETTELIBRARY";
 
 
@@ -24,6 +25,9 @@ abstract class MetaDataSlurper {
             speaker = json.getValue("speaker");
             keywords = json.getValue("keywords");
             summary = json.getValue("summary");
+            if(json.data.containsKey("transcript")) {
+                transcript = json.getValue("transcript");
+            }
 
             if(jsonRet.containsKey("gigglesnort")) {
                 gigglesnort = json.getValue("gigglesnort");
@@ -44,6 +48,8 @@ abstract class MetaDataSlurper {
             SystemPrint.print("There is gigglesnort here. But you can't access it yet.");
             //SystemPrint.print("Gigglesnort: $gigglesnort");
         }
+        SystemPrint.print("Transcript: $transcript");
+
 
     }
 
