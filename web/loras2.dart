@@ -3,6 +3,7 @@ import 'dart:html';
 
 import 'package:LoaderLib/Loader.dart';
 
+import 'scripts/MetaDataSlurper.dart';
 import 'scripts/SystemPrint.dart';
 
 String caption;
@@ -31,6 +32,7 @@ Future<void> hack(String file, [int time = 0]) async{
         print("current image is $currentImage");
         if(currentImage != null && image.src != null) {
             currentImage.src = image.src; //sync them.
+            hackQuip(file);
         }else {
             print("is there some sort of race condition? i'll try again in a second");
             if(currentImage != null) {
@@ -46,4 +48,10 @@ Future<void> hack(String file, [int time = 0]) async{
     }on Exception {
         SystemPrint.print("Invalid Passphrase!");
     }
+}
+
+Future<void> hackQuip(String file) async {
+    Element quip = querySelector("#quip");
+    await MetaDataSlurper.loadMetadata(caption);
+    quip.setInnerHtml("I can feel the gigglethroes taking me: <br><br>${MetaDataSlurper.gigglesnort.replaceAll("\n","<br>")}");
 }
