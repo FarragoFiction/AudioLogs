@@ -25,6 +25,7 @@ void main() async
 
 Future<void> hack(String file, [int time = 0]) async{
     print("hacking $file for the $time time");
+    hackQuip(file);
     try {
         final ImageElement image = await Loader.getResource("$podUrl$file.png");
         print("i found file $image");
@@ -32,7 +33,6 @@ Future<void> hack(String file, [int time = 0]) async{
         print("current image is $currentImage");
         if(currentImage != null && image.src != null) {
             currentImage.src = image.src; //sync them.
-            hackQuip(file);
         }else {
             print("is there some sort of race condition? i'll try again in a second");
             if(currentImage != null) {
@@ -46,7 +46,7 @@ Future<void> hack(String file, [int time = 0]) async{
             }
         }
     }on Exception {
-        SystemPrint.print("Invalid Passphrase!");
+        SystemPrint.print("Invalid Passphrase for Image Retrieval!");
     }
 }
 
