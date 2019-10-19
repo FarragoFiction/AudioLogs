@@ -13,6 +13,7 @@ abstract class MetaDataSlurper {
     static String summary;
     static String transcript = "";
     static const String key = "AUDIOLOGSCASETTELIBRARY";
+    static const String podUrl = "http://farragnarok.com/PodCasts/";
 
 
     static Future<void> loadMetadata(String passphrase) async {
@@ -34,6 +35,7 @@ abstract class MetaDataSlurper {
             }else {
                 gigglesnort = null;
             }
+            printImageSnort(passphrase);
             printMe();
         } on LoaderException {
             SystemPrint.print("Metadata not found. JR must not have gotten to this one yet?");
@@ -49,8 +51,16 @@ abstract class MetaDataSlurper {
             //SystemPrint.print("Gigglesnort: $gigglesnort");
         }
         SystemPrint.print("Transcript: $transcript");
+    }
 
-
+    static void printImageSnort(String file) async {
+        try {
+            await Loader.getResource(
+                "$podUrl$file.png");
+            SystemPrint.print("Image: http://www.farragofiction.com/AudioLogs/loras2.html?passphrase=$file");
+        }on LoaderException {
+            SystemPrint.print("Image: Inaccessible. Have Patience.");
+        }
     }
 
     static void printFoundTapes() {
