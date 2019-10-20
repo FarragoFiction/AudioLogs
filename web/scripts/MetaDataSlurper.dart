@@ -36,6 +36,7 @@ abstract class MetaDataSlurper {
                 gigglesnort = null;
             }
             printImageSnort(passphrase);
+            printPaldemicSnort(passphrase);
             printMe();
         } on LoaderException {
             SystemPrint.print("Metadata not found. JR must not have gotten to this one yet?");
@@ -60,6 +61,17 @@ abstract class MetaDataSlurper {
             SystemPrint.print("Image: http://www.farragofiction.com/AudioLogs/loras2.html?passPhrase=$file");
         }on LoaderException {
             SystemPrint.print("Image: Inaccessible. Have Patience.");
+        }
+    }
+
+    static void printPaldemicSnort(String file) async {
+        try {
+            await Loader.init();
+            await Loader.getResource(
+                "$podUrl$file.paldemic", format: Formats.text);
+            SystemPrint.print("Chat: http://www.farragofiction.com/PaldemicSim/login.html?passPhrase=$file");
+        }on LoaderException {
+            SystemPrint.print("Chat: Inaccessible. Have Patience.");
         }
     }
 
