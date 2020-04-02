@@ -35,6 +35,7 @@ abstract class MetaDataSlurper {
             }else {
                 gigglesnort = null;
             }
+            SystemPrint.print("Image: http://www.farragofiction.com/AudioLogs/collection.html");
             printImageSnort(passphrase);
             printPaldemicSnort(passphrase);
             printMe();

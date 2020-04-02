@@ -3,6 +3,7 @@ import 'dart:html';
 import 'dart:svg' as SVG;
 import 'package:CommonLib/Random.dart';
 import 'package:CommonLib/Colours.dart';
+import 'package:CommonLib/Utility.dart';
 import 'package:LoaderLib/Loader.dart';
 
 import 'MetaDataSlurper.dart';
@@ -12,6 +13,11 @@ class AudioLogView {
     DivElement container;
     String phrase;
     AudioLogView(this.phrase);
+    ImageElement associatedImage;
+    String gigglesnort = "???";
+    String speaker = "???";
+    String transcript = "???";
+    Map<String, Element> jsonElements =new Map<String, Element>();
 
     void display(Element parent) {
         container = new DivElement()..classes.add("audioLogView");
@@ -22,9 +28,16 @@ class AudioLogView {
         container.onClick.listen((Event e) => handleDetailsView());
     }
 
-    void handleDetailsView() {
+    void handleDetailsView() async {
+        window.scrollTo(0,0);
         Element parent = querySelector("#focusEgg");
-        parent.text = phrase;
+        parent.text = "";
+        if(associatedImage != null) parent.append(associatedImage);
+        parent.append(newphraseDetailElement);
+        parent.append(newspeakerElement);
+        parent.append(newsnortElement);
+        parent.append(newtranscriptElement);
+        await populateJson();
     }
 
     Element get newFrameElement {
@@ -54,20 +67,74 @@ class AudioLogView {
         return ret;
     }
 
+    Element get newphraseDetailElement {
+        DivElement ret = new DivElement()..text = this.phrase..classes.add("detailPhrase");
+        return ret;
+    }
+
+    Element get newtranscriptElement {
+        DivElement ret = new DivElement()..text = "Transcript: ???"..classes.add("transcript")..classes.add("detailsSection");
+        jsonElements["transcript"] = ret;
+        return ret;
+    }
+
+    Element get newspeakerElement {
+        DivElement ret = new DivElement()..text = "Speakers: ???"..classes.add("whoIsSpeaking")..classes.add("detailsSection");
+        jsonElements["speaker"] = ret;
+        return ret;
+    }
+
+    Element get newsnortElement {
+        DivElement ret = new DivElement()..text = "Gigglesnort: ???"..classes.add("snort")..classes.add("detailsSection");
+        jsonElements["snort"] = ret;
+        return ret;
+    }
+
     Element get imagePreviewElement {
-        final ImageElement image = new ImageElement()..classes.add("eggThumbnail");
+        final ImageElement image = new ImageElement();
         populateImage(image);
         return image;
     }
 
     Future<void> populateImage(ImageElement image) async{
         try {
-            ImageElement real = await Loader.getResource(
+            associatedImage = await Loader.getResource(
                 "${MetaDataSlurper.podUrl}$phrase.png");
-            image.src = real.src;
+            image.src = associatedImage.src;
+            associatedImage.classes.add("detailImage");
+            image.classes.add("eggThumbnail");
 
         }on LoaderException {
             //no worries.
+        }
+    }
+
+    void syncElementsToJson() {
+        if(jsonElements.containsKey("transcript")) jsonElements["transcript"].setInnerHtml("<b>Transcript</b>: $transcript");
+        if(jsonElements.containsKey("snort")) jsonElements["snort"].setInnerHtml("<b>Gigglesnort</b>: $gigglesnort");
+        if(jsonElements.containsKey("speaker")) jsonElements["speaker"].setInnerHtml("<b>Speaker</b>: $speaker");
+
+    }
+
+    Future<void> populateJson()async {
+        try {
+            final dynamic jsonRet = await Loader.getResource(
+                "http://farragnarok.com/PodCasts/${phrase}.json");
+            final JsonHandler json = new JsonHandler(jsonRet);
+            speaker = json.getValue("speaker");
+            if(json.data.containsKey("transcript")) {
+                transcript = json.getValue("transcript");
+            }
+
+            if(jsonRet.containsKey("gigglesnort")) {
+                gigglesnort = json.getValue("gigglesnort");
+            }else {
+                gigglesnort = null;
+            }
+            syncElementsToJson();
+
+        } on LoaderException {
+            //whoops
         }
     }
 }
