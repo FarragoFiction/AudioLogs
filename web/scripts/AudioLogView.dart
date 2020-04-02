@@ -13,7 +13,10 @@ class AudioLogView {
     DivElement container;
     String phrase;
     AudioLogView(this.phrase);
+    bool displayPaldemicLogo = false;
+    ImageElement paldemicLogo = new ImageElement(src: "images/paldemic.png");
     ImageElement associatedImage;
+    AnchorElement paldemic;
     String gigglesnort = "???";
     String speaker = "???";
     String transcript = "???";
@@ -36,6 +39,7 @@ class AudioLogView {
         parent.append(newphraseDetailElement);
         parent.append(newspeakerElement);
         parent.append(newsnortElement);
+        parent.append(newPaldemicElement);
         parent.append(newtranscriptElement);
         await populateJson();
     }
@@ -53,7 +57,7 @@ class AudioLogView {
     }
 
     Element get newphraseElement {
-        DivElement ret = new DivElement()..text = this.phrase..classes.add("phrase");
+        DivElement ret = new DivElement()..classes.add("phrase");
         Random rand = new Random(phrase.codeUnitAt(phrase.length-1));
         int number = rand.nextIntRange(-20,20);
         int width = rand.nextIntRange(75,150);
@@ -63,6 +67,10 @@ class AudioLogView {
         ret.style.width ="${width}px";
         ret.style.marginLeft="${leftPos}%";
         ret.style.marginTop="${topPos}px";
+        ret.append(paldemicPreviewElement);
+        SpanElement textDiv = new SpanElement()..text = this.phrase;
+        ret.append(textDiv);
+
 
         return ret;
     }
@@ -90,10 +98,50 @@ class AudioLogView {
         return ret;
     }
 
+    Element get newPaldemicElement {
+        DivElement ret = new DivElement()..setInnerHtml( "<b>Paldemic Chat</b>: N/A")..classes.add("paldemic")..classes.add("detailsSection");
+        populatePaldemicLink(ret);
+        return ret;
+    }
+
     Element get imagePreviewElement {
         final ImageElement image = new ImageElement();
         populateImage(image);
         return image;
+    }
+
+    Element get paldemicPreviewElement {
+        final ImageElement image = new ImageElement();
+        populatePaldemicPreview(image);
+        return image;
+    }
+
+    Future<void> populatePaldemicPreview(ImageElement image) async {
+        await populatePaldemicLink(null);
+        if(displayPaldemicLogo) {
+            image.src = paldemicLogo.src;
+            image.classes.add("paldemicLogo");
+        }
+    }
+
+    Future<void> populatePaldemicLink(Element parent) async {
+        if(paldemic != null && parent != null) {
+            parent.setInnerHtml("<b>Paldemic Chat</b>: ");
+            parent.append(paldemic);
+        };
+        try {
+            await Loader.getResource(
+                "${MetaDataSlurper.podUrl}$phrase.paldemic", format: Formats.text);
+            paldemic = new AnchorElement()..href='http://www.farragofiction.com/PaldemicSim/login.html?passPhrase=$phrase'..text = "Click Here";
+            paldemic.target = "_blank";
+            displayPaldemicLogo = true;
+            if(parent != null) {
+                parent.setInnerHtml("<b>Paldemic Chat</b>: ");
+                parent.append(paldemic);
+            }
+        }on LoaderException {
+            //yeah most of them are like this
+        }
     }
 
     Future<void> populateImage(ImageElement image) async{

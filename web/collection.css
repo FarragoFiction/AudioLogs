@@ -42,6 +42,11 @@
     border-bottom: 10px solid white;
 }
 
+.paldemicLogo{
+    display: inline-block;
+    height: 12px;
+}
+
 .audioLogView{
     display: inline-block;
     cursor: pointer;
@@ -51,6 +56,7 @@
 .phrase{
     background-color: rgba(220,220,220,0.7);
     width: 150px;
+    20px;
     padding: 5px;
     overflow: hidden;
     text-align: center;
