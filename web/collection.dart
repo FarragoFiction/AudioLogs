@@ -9,6 +9,9 @@ Future<void> main() async {
      final String existing = window.localStorage[MetaDataSlurper.key];
      if (existing == null) { return; }
      final List<String> parts = existing.split(",");
+     for(String s in parts) {
+        if(s == null || s.isEmpty) parts.remove(s);
+     }
      final Set<String> uniqueParts = parts.toSet();
      for(final String uniquePart in uniqueParts) {
          if(uniquePart != null) {
