@@ -10,7 +10,7 @@ String caption;
 const String podUrl = "http://farragnarok.com/PodCasts/";
 
 //sorry wastes, these passwords are going to be much, much harder than the pod casts, especially since we have to slowly wire them up :) :) :)
-void main() async
+Future<void> main() async
 {
     String initPW = "";
     if(Uri.base.queryParameters['passPhrase'] != null) {
@@ -51,7 +51,7 @@ Future<void> hack(String file, [int time = 0]) async{
 }
 
 Future<void> hackQuip(String file) async {
-    Element quip = querySelector("#quip");
+    final Element quip = querySelector("#quip");
     await MetaDataSlurper.loadMetadata(caption);
     quip.setInnerHtml("I can feel the gigglethroes taking me: <br><br>${MetaDataSlurper.gigglesnort.replaceAll("\n","<br>")}");
 }

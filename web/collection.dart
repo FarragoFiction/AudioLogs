@@ -1,18 +1,16 @@
 import 'dart:html';
 
-import 'package:LoaderLib/Loader.dart';
-
 import 'scripts/AudioLogView.dart';
 import 'scripts/MetaDataSlurper.dart';
 
 Future<void> main() async {
-    await Loader.init();
     final DivElement output = querySelector("#collection");
  if(window.localStorage != null) {
      final String existing = window.localStorage[MetaDataSlurper.key];
+     if (existing == null) { return; }
      final List<String> parts = existing.split(",");
-     final Set<String> uniqueParts = new Set.from(parts);
-     for(String uniquePart in uniqueParts) {
+     final Set<String> uniqueParts = parts.toSet();
+     for(final String uniquePart in uniqueParts) {
         final AudioLogView view = new AudioLogView(uniquePart);
         view.display(output);
      }

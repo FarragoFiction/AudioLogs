@@ -20,7 +20,7 @@ class AudioLogView {
     String gigglesnort = "???";
     String speaker = "???";
     String transcript = "???";
-    Map<String, Element> jsonElements =new Map<String, Element>();
+    Map<String, Element> jsonElements = <String, Element>{};
 
     void display(Element parent) {
         container = new DivElement()..classes.add("audioLogView");
@@ -31,9 +31,9 @@ class AudioLogView {
         container.onClick.listen((Event e) => handleDetailsView());
     }
 
-    void handleDetailsView() async {
+    Future<void> handleDetailsView() async {
         window.scrollTo(0,0);
-        Element parent = querySelector("#focusEgg");
+        final Element parent = querySelector("#focusEgg");
         parent.text = "";
         if(associatedImage != null) parent.append(associatedImage);
         parent.append(newphraseDetailElement);
@@ -45,30 +45,30 @@ class AudioLogView {
     }
 
     Element get newFrameElement {
-        SVG.SvgElement egg = new SVG.SvgElement.svg("<svg class='svg_egg'  version=\"1.1\" id=\"Layer_1\" xmlns=\"http:\/\/www.w3.org\/2000\/svg\" xmlns:xlink=\"http:\/\/www.w3.org\/1999\/xlink\" x=\"0px\" y=\"0px\"\r\n\t viewBox=\"0 0 132.2 189\" style=\"enable-background:new 0 0 132.2 189;\" xml:space=\"preserve\">\r\n<path class='eggcolor' class=\"st0\" d=\"M131.2,101.7c4.1,56.2-28.6,86.3-64.6,86.3S-3.7,157.2,1,101.7C6,43,45,1,66.1,1C86,1,127,44,131.2,101.7z\"\/>\r\n<\/svg>");
-        Random rand = new Random(phrase.codeUnitAt(0));
-        Colour randomColor = new Colour(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
-        Colour finalColor = new Colour.hsv(randomColor.hue, rand.nextDouble(.5),1.0);
+        final SVG.SvgElement egg = new SVG.SvgElement.svg("""<svg class='svg_egg'  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 132.2 189" style="enable-background:new 0 0 132.2 189;" xml:space="preserve"><path class='eggcolor' class="st0" d="M131.2,101.7c4.1,56.2-28.6,86.3-64.6,86.3S-3.7,157.2,1,101.7C6,43,45,1,66.1,1C86,1,127,44,131.2,101.7z"/></svg>""");
+        final Random rand = new Random(phrase.codeUnitAt(0));
+        final Colour randomColor = new Colour(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
+        final Colour finalColor = new Colour.hsv(randomColor.hue, rand.nextDouble(.5),1.0);
         egg.classes.add("visible-egg");
-        egg.style..setProperty('fill', finalColor.toStyleString());
+        egg.style.setProperty('fill', finalColor.toStyleString());
         egg.id="${phrase}_egg";
         return egg;
 
     }
 
     Element get newphraseElement {
-        DivElement ret = new DivElement()..classes.add("phrase");
-        Random rand = new Random(phrase.codeUnitAt(phrase.length-1));
-        int number = rand.nextIntRange(-20,20);
-        int width = rand.nextIntRange(75,150);
-        int leftPos = rand.nextIntRange(45,75);
-        int topPos = rand.nextIntRange(-10,0);
-        ret.style.transform = "translate(-50%,-50%) rotate(${number}deg)";
-        ret.style.width ="${width}px";
-        ret.style.marginLeft="${leftPos}%";
-        ret.style.marginTop="${topPos}px";
+        final DivElement ret = new DivElement()..classes.add("phrase");
+        final Random rand = new Random(phrase.codeUnitAt(phrase.length-1));
+        final int number = rand.nextIntRange(-20,20);
+        final int width = rand.nextIntRange(75,150);
+        final int leftPos = rand.nextIntRange(45,75);
+        final int topPos = rand.nextIntRange(-10,0);
+        ret.style..transform = "translate(-50%,-50%) rotate(${number}deg)"
+            ..width ="${width}px"
+            ..marginLeft="$leftPos%"
+            ..marginTop="${topPos}px";
         ret.append(paldemicPreviewElement);
-        SpanElement textDiv = new SpanElement()..text = this.phrase;
+        final SpanElement textDiv = new SpanElement()..text = this.phrase;
         ret.append(textDiv);
 
 
@@ -76,30 +76,30 @@ class AudioLogView {
     }
 
     Element get newphraseDetailElement {
-        DivElement ret = new DivElement()..text = this.phrase..classes.add("detailPhrase");
+        final DivElement ret = new DivElement()..text = this.phrase..classes.add("detailPhrase");
         return ret;
     }
 
     Element get newtranscriptElement {
-        DivElement ret = new DivElement()..text = "Transcript: ???"..classes.add("transcript")..classes.add("detailsSection");
+        final DivElement ret = new DivElement()..text = "Transcript: ???"..classes.add("transcript")..classes.add("detailsSection");
         jsonElements["transcript"] = ret;
         return ret;
     }
 
     Element get newspeakerElement {
-        DivElement ret = new DivElement()..text = "Speakers: ???"..classes.add("whoIsSpeaking")..classes.add("detailsSection");
+        final DivElement ret = new DivElement()..text = "Speakers: ???"..classes.add("whoIsSpeaking")..classes.add("detailsSection");
         jsonElements["speaker"] = ret;
         return ret;
     }
 
     Element get newsnortElement {
-        DivElement ret = new DivElement()..text = "Gigglesnort: ???"..classes.add("snort")..classes.add("detailsSection");
+        final DivElement ret = new DivElement()..text = "Gigglesnort: ???"..classes.add("snort")..classes.add("detailsSection");
         jsonElements["snort"] = ret;
         return ret;
     }
 
     Element get newPaldemicElement {
-        DivElement ret = new DivElement()..setInnerHtml( "<b>Paldemic Chat</b>: N/A")..classes.add("paldemic")..classes.add("detailsSection");
+        final DivElement ret = new DivElement()..setInnerHtml( "<b>Paldemic Chat</b>: N/A")..classes.add("paldemic")..classes.add("detailsSection");
         populatePaldemicLink(ret);
         return ret;
     }
@@ -128,7 +128,7 @@ class AudioLogView {
         if(paldemic != null && parent != null) {
             parent.setInnerHtml("<b>Paldemic Chat</b>: ");
             parent.append(paldemic);
-        };
+        }
         try {
             await Loader.getResource(
                 "${MetaDataSlurper.podUrl}$phrase.paldemic", format: Formats.text);
@@ -167,7 +167,7 @@ class AudioLogView {
     Future<void> populateJson()async {
         try {
             final dynamic jsonRet = await Loader.getResource(
-                "http://farragnarok.com/PodCasts/${phrase}.json");
+                "http://farragnarok.com/PodCasts/$phrase.json");
             final JsonHandler json = new JsonHandler(jsonRet);
             speaker = json.getValue("speaker");
             if(json.data.containsKey("transcript")) {

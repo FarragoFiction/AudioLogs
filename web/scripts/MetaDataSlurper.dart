@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:html';
 
 import 'package:CommonLib/Utility.dart';
@@ -21,7 +20,7 @@ abstract class MetaDataSlurper {
         printFoundTapes();
         try {
             final dynamic jsonRet = await Loader.getResource(
-                "http://farragnarok.com/PodCasts/${passphrase}.json");
+                "http://farragnarok.com/PodCasts/$passphrase.json");
             final JsonHandler json = new JsonHandler(jsonRet);
             speaker = json.getValue("speaker");
             keywords = json.getValue("keywords");
@@ -55,7 +54,7 @@ abstract class MetaDataSlurper {
         SystemPrint.print("Transcript: $transcript");
     }
 
-    static void printImageSnort(String file) async {
+    static Future<void> printImageSnort(String file) async {
         try {
             await Loader.getResource(
                 "$podUrl$file.png");
@@ -65,11 +64,9 @@ abstract class MetaDataSlurper {
         }
     }
 
-    static void printPaldemicSnort(String file) async {
+    static Future<void> printPaldemicSnort(String file) async {
         try {
-            await Loader.init();
-            await Loader.getResource(
-                "$podUrl$file.paldemic", format: Formats.text);
+            await Loader.getResource("$podUrl$file.paldemic", format: Formats.text);
             SystemPrint.print("Chat: http://www.farragofiction.com/PaldemicSim/login.html?passPhrase=$file");
         }on LoaderException {
             SystemPrint.print("Chat: Inaccessible. Have Patience.");
@@ -88,7 +85,7 @@ abstract class MetaDataSlurper {
 
     }
 
-    static void compareToAll(int found) async{
+    static Future<void> compareToAll(int found) async{
         final String total = await  HttpRequest.getString("http://www.farragofiction.com:85/ogg");
         SystemPrint.print("$found/$total found. That's ${found/int.parse(total)}%.");
     }

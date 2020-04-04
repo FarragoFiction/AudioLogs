@@ -4,7 +4,6 @@ import "dart:math" as Math;
 import 'dart:web_audio';
 
 import 'package:AudioLib/AudioLib.dart';
-import 'package:CommonLib/Logging.dart';
 import 'package:CommonLib/Random.dart';
 import "package:LoaderLib/Loader.dart";
 import "package:CommonLib/Utility.dart";
@@ -222,7 +221,7 @@ Future<void> main() async {
 
     // get ready for some dirty audio hax rewiring yoooo -PL
     final AudioChannel channelVoice = Audio.createChannel("Voice", 1.0); // 0.5
-    final AudioChannel channelBG =  Audio.createChannel("BG", 0.1); // 0.4
+    //final AudioChannel channelBG =  Audio.createChannel("BG", 0.1); // 0.4
 
     channelVoice.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
     //JR note, pl i unhooked this for now just so gigglesnort doesn't get drowned out.

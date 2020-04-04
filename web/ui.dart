@@ -11,7 +11,7 @@ import "package:CommonLib/Utility.dart";
 import "main.dart";
 
 abstract class Keyboard {
-    static final  logger = new Logger("Keyboard", true);
+    static final Logger logger = new Logger("Keyboard", true);
     static final List<List<Key>> _keyData = <List<Key>>[
         <Key>[Key("1","!"), Key("2","@"), Key("3","#"), Key("4","\$"), Key("5","%"), Key("6","^"), Key("7","&"), Key("8","*"), Key("9","("), Key("0",")"), Key("Backspace","","←")],
         <Key>[Key("q","Q","Q"), Key("w","W","W"), Key("e","E","E"), Key("r","R","R"), Key("t","T","T"), Key("y","Y","Y"), Key("u","U","U"), Key("i","I","I"), Key("o","O","O"), Key("p","P","P")],
