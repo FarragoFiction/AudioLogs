@@ -11,8 +11,10 @@ Future<void> main() async {
      final List<String> parts = existing.split(",");
      final Set<String> uniqueParts = parts.toSet();
      for(final String uniquePart in uniqueParts) {
-        final AudioLogView view = new AudioLogView(uniquePart);
-        view.display(output);
+         if(uniquePart != null) {
+             final AudioLogView view = new AudioLogView(uniquePart);
+             view.display(output);
+         }
      }
  }else {
      print("Can't load tape deck: you don't have local storage");
