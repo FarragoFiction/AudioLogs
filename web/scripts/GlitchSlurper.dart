@@ -7,7 +7,7 @@ abstract class GlitchSlurper {
     static String lastUpdated;
 
     static Future<List<String>> loadAbsoluteBullshit() async {
-        final dynamic jsonRet = await  Loader.getResource("http://farragnarok.com/PodCasts/glitches.json");
+        final Map<String,dynamic> jsonRet = await  Loader.getResource("http://farragnarok.com/PodCasts/glitches.json");
         final JsonHandler json = new JsonHandler(jsonRet);
         glitchFiles = json.getArray("glitches");
         lastUpdated = json.getValue("lastUpdate");

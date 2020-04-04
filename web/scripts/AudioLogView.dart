@@ -166,7 +166,7 @@ class AudioLogView {
 
     Future<void> populateJson()async {
         try {
-            final dynamic jsonRet = await Loader.getResource(
+            final Map<String,dynamic> jsonRet = await Loader.getResource(
                 "http://farragnarok.com/PodCasts/$phrase.json");
             final JsonHandler json = new JsonHandler(jsonRet);
             speaker = json.getValue("speaker");
