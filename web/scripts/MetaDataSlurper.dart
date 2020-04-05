@@ -56,8 +56,7 @@ abstract class MetaDataSlurper {
 
     static Future<void> printImageSnort(String file) async {
         try {
-            await Loader.getResource(
-                "$podUrl$file.png");
+            await Loader.getResource("$podUrl$file.png");
             SystemPrint.print("Image: http://www.farragofiction.com/AudioLogs/loras2.html?passPhrase=$file");
         }on LoaderException {
             SystemPrint.print("Image: Inaccessible. Have Patience.");
