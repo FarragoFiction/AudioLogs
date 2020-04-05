@@ -57,7 +57,7 @@ class AudioLogView {
             ..viewBox.baseVal.width = width
             ..viewBox.baseVal.height = height;
         final SVG.GElement group = new SVG.GElement()
-            ..setAttribute("clip-path", "url(#egg)");
+            ..setAttribute("clip-path", "url(#🥚)");
         final SVG.RectElement background = new SVG.RectElement()
             ..width.baseVal.value = width
             ..height.baseVal.value = height
@@ -68,7 +68,7 @@ class AudioLogView {
 
         final SVG.ClipPathElement clip = new SVG.ClipPathElement()
             ..append(path)
-            ..id = "egg";
+            ..id = "🥚";
         final SVG.DefsElement defs = new SVG.DefsElement()
             ..append(clip);
         svg.append(defs);
