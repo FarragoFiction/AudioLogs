@@ -221,7 +221,7 @@ Future<void> main() async {
 
     // get ready for some dirty audio hax rewiring yoooo -PL
     final AudioChannel channelVoice = Audio.createChannel("Voice", 1.0); // 0.5
-    //final AudioChannel channelBG =  Audio.createChannel("BG", 0.1); // 0.4
+    Audio.createChannel("BG", 0.1); // 0.4
 
     channelVoice.volumeNode.disconnect(Audio.SYSTEM.volumeNode);
     //JR note, pl i unhooked this for now just so gigglesnort doesn't get drowned out.
@@ -332,8 +332,9 @@ Future<List<AudioBufferSourceNode>> gigglesnort(String value) async {
         await Audio.SYSTEM.load(file);
         if(!playing) { return noSnorts; }
         final AudioBufferSourceNode node = await Audio.play(
-            file, "BG")
-            ..playbackRate.value = 0.9;
+            file, "BG");
+        node.playbackRate.value = 0.9;
+
         nodes.add(new StoppedFlagNodeWrapper(node));
         mynodes.add(node);
     }
